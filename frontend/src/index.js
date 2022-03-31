@@ -1,5 +1,7 @@
 import React from 'react'
 import * as ReactDOMClient from 'react-dom/client'
+import { Provider } from 'react-redux'
+import store from './store'
 import './index.css'
 import './bootstrap.min.css'
 import App from './App'
@@ -8,4 +10,8 @@ const container = document.getElementById('root')
 
 const root = ReactDOMClient.createRoot(container)
 
-root.render(<App />)
+root.render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+)
