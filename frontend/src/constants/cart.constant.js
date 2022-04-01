@@ -1,0 +1,7 @@
+const ADD_ITEM = 'CART_ADD_ITEM'
+const REMOVE_ITEM = 'CART_REMOVE_ITEM'
+
+export const CART_CONSTANT = {
+  ADD_ITEM,
+  REMOVE_ITEM,
+}

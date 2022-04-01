@@ -1,6 +1,6 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import connectDB from './config/db.js'
+import connectDB from './config/mongoose.js'
 import morgan from 'morgan'
 import colors from 'colors'
 import { ErrorMiddleware } from './middleware/error.middleware.js'
