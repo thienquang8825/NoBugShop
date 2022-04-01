@@ -9,7 +9,7 @@ import Brand from './models/brand.model.js'
 import Category from './models/category.model.js'
 import Product from './models/product.model.js'
 import Order from './models/order.model.js'
-import connectDB from './config/db.js'
+import connectDB from './config/mongoose.js'
 
 dotenv.config()
 

@@ -1,6 +1,8 @@
 import React from 'react'
 import { Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { moneyFormat } from '../utils/moneyFormat'
+
 import Rating from './Rating'
 
 const Product = ({ product }) => {
@@ -24,7 +26,7 @@ const Product = ({ product }) => {
           />
         </Card.Text>
 
-        <Card.Text as='h3'>${product.price}</Card.Text>
+        <Card.Text as='h3'>{moneyFormat(product.price)}</Card.Text>
       </Card.Body>
     </Card>
   )
