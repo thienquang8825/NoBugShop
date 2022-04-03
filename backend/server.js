@@ -6,12 +6,16 @@ import colors from 'colors'
 import { ErrorMiddleware } from './middleware/error.middleware.js'
 
 import productRoutes from './routes/product.route.js'
+import userRoutes from './routes/user.route.js'
 
 dotenv.config()
 
 connectDB()
 
 const app = express()
+
+//allow to accept JSON data in the body of request
+app.use(express.json())
 
 //use morgan (show api in console)
 if (process.env.NODE_ENV === 'development') {
@@ -23,6 +27,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/products', productRoutes)
+app.use('/api/users', userRoutes)
 
 app.use(ErrorMiddleware.notFoundUrl)
 
