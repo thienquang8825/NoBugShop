@@ -11,5 +11,6 @@ router.route('/login').post(UserController.authUser)
 router
   .route('/profile')
   .get(AuthMiddleware.protect, UserController.getUserProfile)
+  .put(AuthMiddleware.protect, UserController.updateUserProfile)
 
 export default router
