@@ -1,13 +1,21 @@
 import React from 'react'
-import { Container, Navbar, Nav } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
+import { UserAction } from '../actions/user.action'
 
 const Header = () => {
-  // const [numItem, setItem] = useState(0)
+  const dispatch = useDispatch()
 
   const cart = useSelector((state) => state.cart)
   const { cartItems } = cart
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
+  const logoutHandler = () => {
+    dispatch(UserAction.logout())
+  }
 
   return (
     <header>
@@ -23,11 +31,22 @@ const Header = () => {
                 {cartItems.length > 0 && `(${cartItems.length})`}
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to='/login'>
-              <Nav.Link>
-                <i className='fas fa-user'></i> Đăng nhập
-              </Nav.Link>
-            </LinkContainer>
+            {userInfo ? (
+              <NavDropdown title={userInfo.name} id='username'>
+                <LinkContainer to='/profile'>
+                  <NavDropdown.Item>Thông tin</NavDropdown.Item>
+                </LinkContainer>
+                <NavDropdown.Item onClick={logoutHandler}>
+                  Đăng xuất
+                </NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <LinkContainer to='/login'>
+                <Nav.Link>
+                  <i className='fas fa-user'></i> Đăng nhập
+                </Nav.Link>
+              </LinkContainer>
+            )}
           </Nav>
         </Container>
       </Navbar>

@@ -24,7 +24,7 @@ const CartScreen = () => {
 
   return (
     <Row>
-      <Col md={8}>
+      <Col md={9}>
         <h1>Giỏ Hàng</h1>
         {cartItems.length === 0 ? (
           <Message>
@@ -72,7 +72,7 @@ const CartScreen = () => {
           </ListGroup>
         )}
       </Col>
-      <Col md={4}>
+      <Col md={3}>
         <Card>
           <ListGroup variant='flush'>
             <ListGroup.Item>
