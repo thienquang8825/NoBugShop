@@ -14,6 +14,10 @@ const CartScreen = () => {
   const cart = useSelector((state) => state.cart)
   const { cartItems } = cart
 
+  const changeQuantityHandler = (e, item) => {
+    dispatch(CartAction.addToCart(item, Number(e.target.value)))
+  }
+
   const removeFromCartHandler = (productId) => {
     dispatch(CartAction.removeFromCart(productId))
   }
@@ -33,7 +37,7 @@ const CartScreen = () => {
         ) : (
           <ListGroup variant='flush'>
             {cartItems.map((item) => (
-              <ListGroup.Item key={item.id}>
+              <ListGroup.Item key={item.productId}>
                 <Row className='d-flex align-items-center'>
                   <Col md={2}>
                     <Image src={item.image} alt={item.name} fluid />
@@ -45,11 +49,7 @@ const CartScreen = () => {
                   <Col md={2}>
                     <Form.Select
                       value={item.quantity}
-                      onChange={(e) =>
-                        dispatch(
-                          CartAction.addToCart(item, Number(e.target.value))
-                        )
-                      }
+                      onChange={(e) => changeQuantityHandler(e, item)}
                     >
                       {[...Array(item.countInStock).keys()].map((x) => (
                         <option key={x + 1} value={x + 1}>
@@ -61,7 +61,7 @@ const CartScreen = () => {
                   <Col md={1}>
                     <Button
                       variant='light'
-                      onClick={() => removeFromCartHandler(item.id)}
+                      onClick={() => removeFromCartHandler(item.productId)}
                     >
                       <i className='fas fa-trash'></i>
                     </Button>
