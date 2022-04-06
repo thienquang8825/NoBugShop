@@ -35,6 +35,7 @@ const Header = () => {
                 {cartItems.length > 0 && `(${cartItems.length})`}
               </Nav.Link>
             </LinkContainer>
+
             {userInfo ? (
               <NavDropdown title={userInfo.name} id='username'>
                 <LinkContainer to='/profile'>
@@ -50,6 +51,20 @@ const Header = () => {
                   <i className='fas fa-user'></i> Đăng nhập
                 </Nav.Link>
               </LinkContainer>
+            )}
+
+            {userInfo && userInfo.isAdmin && (
+              <NavDropdown title='Admin' id='adminmenu'>
+                <LinkContainer to='/admin/userlist'>
+                  <NavDropdown.Item>Người dùng</NavDropdown.Item>
+                </LinkContainer>
+                <LinkContainer to='/admin/productlist'>
+                  <NavDropdown.Item>Sản phẩm</NavDropdown.Item>
+                </LinkContainer>
+                <LinkContainer to='/admin/orderlist'>
+                  <NavDropdown.Item>Đơn hàng</NavDropdown.Item>
+                </LinkContainer>
+              </NavDropdown>
             )}
           </Nav>
         </Container>

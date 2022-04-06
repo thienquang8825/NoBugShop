@@ -58,9 +58,55 @@ const updateProfile = (state = {}, action) => {
   }
 }
 
+const getList = (state = { users: [] }, action) => {
+  switch (action.type) {
+    case CONSTANT.GET_LIST_REQUEST:
+      return { loading: true }
+    case CONSTANT.GET_LIST_SUCCESS:
+      return { loading: false, users: action.payload }
+    case CONSTANT.GET_LIST_FAIL:
+      return { loading: false, error: action.payload }
+    case CONSTANT.GET_LIST_RESET:
+      return { users: [] }
+    default:
+      return state
+  }
+}
+
+const deleteUser = (state = {}, action) => {
+  switch (action.type) {
+    case CONSTANT.DELETE_REQUEST:
+      return { loading: true }
+    case CONSTANT.DELETE_SUCCESS:
+      return { loading: false, success: true }
+    case CONSTANT.DELETE_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+const updateUser = (state = { users: {} }, action) => {
+  switch (action.type) {
+    case CONSTANT.UPDATE_REQUEST:
+      return { loading: true }
+    case CONSTANT.UPDATE_SUCCESS:
+      return { loading: false, success: true }
+    case CONSTANT.UPDATE_FAIL:
+      return { loading: false, error: action.payload }
+    case CONSTANT.UPDATE_RESET:
+      return { users: {} }
+    default:
+      return state
+  }
+}
+
 export const UserReducer = {
   login,
   register,
   getProfile,
   updateProfile,
+  getList,
+  deleteUser,
+  updateUser,
 }
