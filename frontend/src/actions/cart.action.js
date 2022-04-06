@@ -4,8 +4,8 @@ const addToCart = (product, quantity) => async (dispatch, getState) => {
   dispatch({
     type: CONSTANT.ADD_ITEM,
     payload: {
-      //product._id from ProductScreen, product.id from CartScreen
-      id: product._id || product.id,
+      //product._id get from URL of ProductScreen, product.id from CartScreen
+      productId: product._id || product.productId,
       name: product.name,
       image: product.image,
       price: product.price,
@@ -26,4 +26,27 @@ const removeFromCart = (productId) => async (dispatch, getState) => {
   localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems))
 }
 
-export const CartAction = { addToCart, removeFromCart }
+const saveShippingAddress = (data) => async (dispatch) => {
+  dispatch({
+    type: CONSTANT.SAVE_SHIPPING_ADDRESS,
+    payload: data,
+  })
+
+  localStorage.setItem('shippingAddress', JSON.stringify(data))
+}
+
+const savePaymentMethod = (data) => async (dispatch) => {
+  dispatch({
+    type: CONSTANT.SAVE_PAYMENT_METHOD,
+    payload: data,
+  })
+
+  localStorage.setItem('paymentMethod', JSON.stringify(data))
+}
+
+export const CartAction = {
+  addToCart,
+  removeFromCart,
+  saveShippingAddress,
+  savePaymentMethod,
+}

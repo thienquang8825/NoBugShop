@@ -36,11 +36,13 @@ const login = (email, password) => async (dispatch) => {
 const logout = () => async (dispatch) => {
   localStorage.removeItem('userInfo')
   localStorage.removeItem('cartItems')
+  // localStorage.removeItem('shippingAddress')
+  // localStorage.removeItem('paymentMethod')
 
   dispatch({ type: CONSTANT.LOGOUT })
   dispatch({ type: CART_CONSTANT.CLEAR_ITEMS })
-
-  document.location.href = '/login'
+  // dispatch({ type: ORDER_LIST_MY_RESET })
+  // dispatch({ type: USER_LIST_RESET })
 }
 
 const register = (name, email, password) => async (dispatch) => {
