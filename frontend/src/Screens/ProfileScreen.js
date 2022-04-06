@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { Form, Button, Row, Col, Table } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { moneyFormat } from '../utils/moneyFormat'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { UserAction } from '../actions/user.action'
-// import { listMyOrders } from '../actions/orderActions'
+import { OrderAction } from '../actions/order.action'
+import { USER_CONSTANTS } from '../constants/user.constants'
 
 const ProfileScreen = () => {
   const [name, setName] = useState('')
@@ -27,21 +29,23 @@ const ProfileScreen = () => {
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile)
   const { success } = userUpdateProfile
 
-  // const orderListMy = useSelector((state) => state.orderListMy)
-  // const { loading: loadingOrders, error: errorOrders, orders } = orderListMy
+  const orderGetMyList = useSelector((state) => state.orderGetMyList)
+  const { loading: loadingOrders, error: errorOrders, orders } = orderGetMyList
 
   useEffect(() => {
     if (!userInfo) {
       navigate('/login')
     } else {
-      if (!userProfile.name) {
+      if (!userProfile.name || success) {
+        dispatch({ type: USER_CONSTANTS.UPDATE_PROFILE_RESET })
         dispatch(UserAction.getProfile())
+        dispatch(OrderAction.getMyList())
       } else {
         setName(userProfile.name)
         setEmail(userProfile.email)
       }
     }
-  }, [dispatch, navigate, userInfo, userProfile])
+  }, [dispatch, navigate, success, userInfo, userProfile])
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -58,7 +62,7 @@ const ProfileScreen = () => {
   return (
     <Row>
       <Col md={3}>
-        <h1>Thông Tin</h1>
+        <h2>Thông Tin</h2>
         {message && <Message variant='danger'>{message}</Message>}
         {error && <Message variant='danger'>{error}</Message>}
         {success && (
@@ -112,20 +116,26 @@ const ProfileScreen = () => {
         </Form>
       </Col>
       <Col md={9}>
-        {/* <h2>Đơn Hàng</h2>
+        <h2>Đơn Hàng</h2>
         {loadingOrders ? (
           <Loader />
         ) : errorOrders ? (
           <Message variant='danger'>{errorOrders}</Message>
         ) : (
-          <Table striped bordered hover responsive className='table-sm'>
+          <Table
+            striped
+            bordered
+            hover
+            responsive
+            className='table-primary table-sm'
+          >
             <thead>
               <tr>
-                <th>ID</th>
-                <th>DATE</th>
-                <th>TOTAL</th>
-                <th>PAID</th>
-                <th>DELIVERED</th>
+                <th>Mã đơn hằng</th>
+                <th>Ngày tạo</th>
+                <th>Tổng tiền</th>
+                <th>Thanh toán</th>
+                <th>Giao hàng</th>
                 <th></th>
               </tr>
             </thead>
@@ -134,7 +144,7 @@ const ProfileScreen = () => {
                 <tr key={order._id}>
                   <td>{order._id}</td>
                   <td>{order.createdAt.substring(0, 10)}</td>
-                  <td>{order.totalPrice}</td>
+                  <td>{moneyFormat(order.totalPrice)}</td>
                   <td>
                     {order.isPaid ? (
                       order.paidAt.substring(0, 10)
@@ -151,8 +161,8 @@ const ProfileScreen = () => {
                   </td>
                   <td>
                     <LinkContainer to={`/order/${order._id}`}>
-                      <Button className='btn-sm' variant='light'>
-                        Details
+                      <Button className='btn-sm' variant='primary'>
+                        Chi tiết
                       </Button>
                     </LinkContainer>
                   </td>
@@ -160,7 +170,7 @@ const ProfileScreen = () => {
               ))}
             </tbody>
           </Table>
-        )} */}
+        )}
       </Col>
     </Row>
   )

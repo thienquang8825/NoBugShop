@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { USER_CONSTANTS as CONSTANT } from '../constants/user.constants'
 import { CART_CONSTANT } from '../constants/cart.constant'
+import { ORDER_CONSTANT } from '../constants/order.constant'
 
 const login = (email, password) => async (dispatch) => {
   try {
@@ -41,8 +42,8 @@ const logout = () => async (dispatch) => {
 
   dispatch({ type: CONSTANT.LOGOUT })
   dispatch({ type: CART_CONSTANT.CLEAR_ITEMS })
-  // dispatch({ type: ORDER_LIST_MY_RESET })
-  // dispatch({ type: USER_LIST_RESET })
+  dispatch({ type: CONSTANT.GET_PROFILE_RESET })
+  dispatch({ type: ORDER_CONSTANT.GET_MY_LIST_RESET })
 }
 
 const register = (name, email, password) => async (dispatch) => {
@@ -91,7 +92,6 @@ const getProfile = () => async (dispatch, getState) => {
 
     const config = {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.token}`,
       },
     }
