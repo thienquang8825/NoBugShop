@@ -36,6 +36,8 @@ const getProfile = (state = { userProfile: {} }, action) => {
       return { loading: false, userProfile: action.payload }
     case CONSTANT.GET_PROFILE_FAIL:
       return { loading: false, error: action.payload }
+    case CONSTANT.GET_PROFILE_RESET:
+      return { userProfile: {} }
     default:
       return state
   }
@@ -49,6 +51,8 @@ const updateProfile = (state = {}, action) => {
       return { loading: false, success: true, userProfile: action.payload }
     case CONSTANT.UPDATE_PROFILE_FAIL:
       return { loading: false, error: action.payload }
+    case CONSTANT.UPDATE_PROFILE_RESET:
+      return {}
     default:
       return state
   }

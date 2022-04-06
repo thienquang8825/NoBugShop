@@ -6,6 +6,8 @@ import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
 import { moneyFormat } from '../utils/moneyFormat'
 import { OrderAction } from '../actions/order.action'
+import { ORDER_CONSTANT } from '../constants/order.constant'
+import { CART_CONSTANT } from '../constants/cart.constant'
 
 const PlaceOrderScreen = () => {
   const dispatch = useDispatch()
@@ -27,7 +29,7 @@ const PlaceOrderScreen = () => {
     if (success) {
       navigate(`/order/${order._id}`)
       // dispatch({ type: USER_DETAILS_RESET })
-      // dispatch({ type: ORDER_CREATE_RESET })
+      dispatch({ type: ORDER_CONSTANT.CREATE_RESET })
     }
     //eslint-disable-next-line
   }, [navigate, success])
@@ -55,7 +57,7 @@ const PlaceOrderScreen = () => {
               <h2>Địa Chỉ Giao Hàng</h2>
               <p>
                 <strong>Địa chỉ: </strong>
-                {cart.shippingAddress.address}, {cart.shippingAddress.war},{' '}
+                {cart.shippingAddress.address}, {cart.shippingAddress.ward},{' '}
                 {cart.shippingAddress.district}, {cart.shippingAddress.city}
               </p>
             </ListGroup.Item>
