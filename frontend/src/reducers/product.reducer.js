@@ -26,4 +26,53 @@ const getDetails = (state = { product: {} }, action) => {
   }
 }
 
-export const ProductReducer = { getList, getDetails }
+const deleteProduct = (state = {}, action) => {
+  switch (action.type) {
+    case CONSTANT.DELETE_REQUEST:
+      return { loading: true }
+    case CONSTANT.DELETE_SUCCESS:
+      return { loading: false, success: true }
+    case CONSTANT.DELETE_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+const createProduct = (state = {}, action) => {
+  switch (action.type) {
+    case CONSTANT.CREATE_REQUEST:
+      return { loading: true }
+    case CONSTANT.CREATE_SUCCESS:
+      return { loading: false, success: true, product: action.payload }
+    case CONSTANT.CREATE_FAIL:
+      return { loading: false, error: action.payload }
+    case CONSTANT.CREATE_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+
+const updateProduct = (state = { product: {} }, action) => {
+  switch (action.type) {
+    case CONSTANT.UPDATE_REQUEST:
+      return { loading: true }
+    case CONSTANT.UPDATE_SUCCESS:
+      return { loading: false, success: true, product: action.payload }
+    case CONSTANT.UPDATE_FAIL:
+      return { loading: false, error: action.payload }
+    case CONSTANT.UPDATE_RESET:
+      return { product: {} }
+    default:
+      return state
+  }
+}
+
+export const ProductReducer = {
+  getList,
+  getDetails,
+  deleteProduct,
+  createProduct,
+  updateProduct,
+}

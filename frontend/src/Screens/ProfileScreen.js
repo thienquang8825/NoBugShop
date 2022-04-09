@@ -38,6 +38,7 @@ const ProfileScreen = () => {
     } else {
       if (!userProfile.name || success) {
         dispatch({ type: USER_CONSTANTS.UPDATE_PROFILE_RESET })
+
         dispatch(UserAction.getProfile('profile'))
         dispatch(OrderAction.getMyList())
       } else {

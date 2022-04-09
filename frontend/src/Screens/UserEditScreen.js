@@ -53,7 +53,7 @@ const UserEditScreen = () => {
   return (
     <>
       <Link to='/admin/userlist' className='btn btn-primary my-3'>
-        Quay Trở Lại
+        Quay lại
       </Link>
       <FormContainer>
         <h1>Cập Nhật Thông Tin</h1>

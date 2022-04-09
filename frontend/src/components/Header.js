@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { UserAction } from '../actions/user.action'
+import { BrandAction } from '../actions/brand.action'
+import { CategoryAction } from '../actions/category.action'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -14,6 +16,17 @@ const Header = () => {
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
+
+  const brandGetList = useSelector((state) => state.brandGetList)
+  const { brands } = brandGetList
+
+  const categoryGetList = useSelector((state) => state.categoryGetList)
+  const { categories } = categoryGetList
+
+  useEffect(() => {
+    dispatch(BrandAction.getList())
+    dispatch(CategoryAction.getList())
+  }, [dispatch])
 
   const logoutHandler = () => {
     dispatch(UserAction.logout())
@@ -28,6 +41,29 @@ const Header = () => {
           <LinkContainer to='/'>
             <Navbar.Brand>NoBug Shop</Navbar.Brand>
           </LinkContainer>
+
+          <Nav>
+            {categories && (
+              <NavDropdown title='Category' id='categoryMenu'>
+                {brands.map((category) => (
+                  <NavDropdown.Item key={category._id}>
+                    {category.name}
+                  </NavDropdown.Item>
+                ))}
+              </NavDropdown>
+            )}
+
+            {brands && (
+              <NavDropdown title='Brand' id='brandMenu'>
+                {brands.map((brand) => (
+                  <NavDropdown.Item key={brand._id}>
+                    {brand.name}
+                  </NavDropdown.Item>
+                ))}
+              </NavDropdown>
+            )}
+          </Nav>
+
           <Nav className='ms-auto'>
             <LinkContainer to='/cart'>
               <Nav.Link>

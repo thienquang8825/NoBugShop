@@ -5,38 +5,30 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { UserAction } from '../actions/user.action'
+import { OrderAction } from '../actions/order.action'
+import { moneyFormat } from '../utils/moneyFormat'
 
-const UserListScreen = ({ history }) => {
+const OrderListScreen = ({ history }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const userGetList = useSelector((state) => state.userGetList)
-  const { loading, error, users } = userGetList
+  const orderGetList = useSelector((state) => state.orderGetList)
+  const { loading, error, orders } = orderGetList
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
 
-  const userDelete = useSelector((state) => state.userDelete)
-  const { success: successDelete } = userDelete
-
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
-      dispatch(UserAction.getList())
+      dispatch(OrderAction.getList())
     } else {
       navigate('/login')
     }
-  }, [dispatch, navigate, userInfo, successDelete])
-
-  const deleteHandler = (userId) => {
-    if (window.confirm('Bạn chắc chứ???')) {
-      dispatch(UserAction.deleteUser(userId))
-    }
-  }
+  }, [dispatch, navigate, userInfo])
 
   return (
     <>
-      <h1>Danh Sách Người Dùng</h1>
+      <h1>Danh Sách Đơn Hàng</h1>
       {loading ? (
         <Loader />
       ) : error ? (
@@ -46,40 +38,41 @@ const UserListScreen = ({ history }) => {
           <thead className='table-primary'>
             <tr>
               <th>Id</th>
-              <th>Tên</th>
-              <th>Email</th>
-              <th>Admin</th>
+              <th>Khách hàng</th>
+              <th>Ngày tạo</th>
+              <th>Tổng tiền</th>
+              <th>Thanh toán</th>
+              <th>Giao hàng</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user._id}>
-                <td>{user._id}</td>
-                <td>{user.name}</td>
+            {orders.map((order) => (
+              <tr key={order._id}>
+                <td>{order._id}</td>
+                <td>{order.userId && order.userId.name}</td>
+                <td>{order.createdAt.substring(0, 10)}</td>
+                <td>{moneyFormat(order.totalPrice)}</td>
                 <td>
-                  <a href={`mailto:${user.email}`}>{user.email}</a>
-                </td>
-                <td>
-                  {user.isAdmin ? (
-                    <i className='fas fa-check' style={{ color: 'green' }}></i>
+                  {order.isPaid ? (
+                    order.paidAt.substring(0, 10)
                   ) : (
                     <i className='fas fa-times' style={{ color: 'red' }}></i>
                   )}
                 </td>
                 <td>
-                  <LinkContainer to={`/admin/user/${user._id}/edit`}>
+                  {order.isDelivered ? (
+                    order.deliveredAt.substring(0, 10)
+                  ) : (
+                    <i className='fas fa-times' style={{ color: 'red' }}></i>
+                  )}
+                </td>
+                <td>
+                  <LinkContainer to={`/order/${order._id}`}>
                     <Button variant='primary' className='btn-sm'>
-                      <i className='fas fa-edit'></i>
+                      Chi tiết
                     </Button>
                   </LinkContainer>
-                  <Button
-                    variant='danger'
-                    className='btn-sm'
-                    onClick={() => deleteHandler(user._id)}
-                  >
-                    <i className='fas fa-trash'></i>
-                  </Button>
                 </td>
               </tr>
             ))}
@@ -90,4 +83,4 @@ const UserListScreen = ({ history }) => {
   )
 }
 
-export default UserListScreen
+export default OrderListScreen
