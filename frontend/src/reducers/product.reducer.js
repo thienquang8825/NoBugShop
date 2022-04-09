@@ -5,7 +5,12 @@ const getList = (state = { products: [] }, action) => {
     case CONSTANT.GET_LIST_REQUEST:
       return { loading: true, products: [] }
     case CONSTANT.GET_LIST_SUCCESS:
-      return { loading: false, products: action.payload }
+      return {
+        loading: false,
+        products: action.payload.products,
+        page: action.payload.page,
+        pages: action.payload.pages,
+      }
     case CONSTANT.GET_LIST_FAIL:
       return { loading: false, error: action.payload }
     default:

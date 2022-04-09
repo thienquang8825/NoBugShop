@@ -6,6 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { UserAction } from '../actions/user.action'
 import { BrandAction } from '../actions/brand.action'
 import { CategoryAction } from '../actions/category.action'
+import SearchBox from './SearchBox'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -36,73 +37,77 @@ const Header = () => {
 
   return (
     <header>
-      <Navbar bg='primary' variant='dark'>
+      <Navbar bg='primary' variant='dark' expand='lg' collapseOnSelect>
         <Container>
           <LinkContainer to='/'>
             <Navbar.Brand>NoBug Shop</Navbar.Brand>
           </LinkContainer>
+          <Navbar.Toggle aria-controls='basic-navbar-nav' />
+          <Navbar.Collapse id='basic-navbar-nav'>
+            <Nav>
+              {categories && (
+                <NavDropdown title='Category' id='categoryMenu'>
+                  {brands.map((category) => (
+                    <NavDropdown.Item key={category._id}>
+                      {category.name}
+                    </NavDropdown.Item>
+                  ))}
+                </NavDropdown>
+              )}
 
-          <Nav>
-            {categories && (
-              <NavDropdown title='Category' id='categoryMenu'>
-                {brands.map((category) => (
-                  <NavDropdown.Item key={category._id}>
-                    {category.name}
-                  </NavDropdown.Item>
-                ))}
-              </NavDropdown>
-            )}
+              {brands && (
+                <NavDropdown title='Brand' id='brandMenu'>
+                  {brands.map((brand) => (
+                    <NavDropdown.Item key={brand._id}>
+                      {brand.name}
+                    </NavDropdown.Item>
+                  ))}
+                </NavDropdown>
+              )}
+            </Nav>
 
-            {brands && (
-              <NavDropdown title='Brand' id='brandMenu'>
-                {brands.map((brand) => (
-                  <NavDropdown.Item key={brand._id}>
-                    {brand.name}
-                  </NavDropdown.Item>
-                ))}
-              </NavDropdown>
-            )}
-          </Nav>
+            <SearchBox />
 
-          <Nav className='ms-auto'>
-            <LinkContainer to='/cart'>
-              <Nav.Link>
-                <i className='fas fa-shopping-cart'></i> Giỏ hàng{' '}
-                {cartItems.length > 0 && `(${cartItems.length})`}
-              </Nav.Link>
-            </LinkContainer>
-
-            {userInfo ? (
-              <NavDropdown title={userInfo.name} id='username'>
-                <LinkContainer to='/profile'>
-                  <NavDropdown.Item>Thông tin</NavDropdown.Item>
-                </LinkContainer>
-                <NavDropdown.Item onClick={logoutHandler}>
-                  Đăng xuất
-                </NavDropdown.Item>
-              </NavDropdown>
-            ) : (
-              <LinkContainer to='/login'>
+            <Nav className='ms-auto'>
+              <LinkContainer to='/cart'>
                 <Nav.Link>
-                  <i className='fas fa-user'></i> Đăng nhập
+                  <i className='fas fa-shopping-cart'></i> Giỏ hàng{' '}
+                  {cartItems.length > 0 && `(${cartItems.length})`}
                 </Nav.Link>
               </LinkContainer>
-            )}
 
-            {userInfo && userInfo.isAdmin && (
-              <NavDropdown title='Admin' id='adminmenu'>
-                <LinkContainer to='/admin/userlist'>
-                  <NavDropdown.Item>Người dùng</NavDropdown.Item>
+              {userInfo ? (
+                <NavDropdown title={userInfo.name} id='username'>
+                  <LinkContainer to='/profile'>
+                    <NavDropdown.Item>Thông tin</NavDropdown.Item>
+                  </LinkContainer>
+                  <NavDropdown.Item onClick={logoutHandler}>
+                    Đăng xuất
+                  </NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                <LinkContainer to='/login'>
+                  <Nav.Link>
+                    <i className='fas fa-user'></i> Đăng nhập
+                  </Nav.Link>
                 </LinkContainer>
-                <LinkContainer to='/admin/productlist'>
-                  <NavDropdown.Item>Sản phẩm</NavDropdown.Item>
-                </LinkContainer>
-                <LinkContainer to='/admin/orderlist'>
-                  <NavDropdown.Item>Đơn hàng</NavDropdown.Item>
-                </LinkContainer>
-              </NavDropdown>
-            )}
-          </Nav>
+              )}
+
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title='Admin' id='adminmenu'>
+                  <LinkContainer to='/admin/userlist'>
+                    <NavDropdown.Item>Người dùng</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to='/admin/productlist'>
+                    <NavDropdown.Item>Sản phẩm</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to='/admin/orderlist'>
+                    <NavDropdown.Item>Đơn hàng</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
+              )}
+            </Nav>
+          </Navbar.Collapse>
         </Container>
       </Navbar>
     </header>
