@@ -95,7 +95,6 @@ const pay = (orderId) => async (dispatch, getState) => {
 
     const config = {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.token}`,
       },
     }
@@ -104,6 +103,50 @@ const pay = (orderId) => async (dispatch, getState) => {
 
     dispatch({
       type: CONSTANT.PAY_SUCCESS,
+      payload: data,
+    })
+
+    //fix order after payment, myorder not update
+    dispatch(getMyList())
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Not authorized, token failed') {
+      dispatch(UserAction.logout())
+    }
+    dispatch({
+      type: CONSTANT.PAY_FAIL,
+      payload: message,
+    })
+  }
+}
+
+const deliver = (orderId) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: CONSTANT.DELIVER_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.put(
+      `/api/orders/${orderId}/deliver`,
+      {},
+      config
+    )
+
+    dispatch({
+      type: CONSTANT.DELIVER_SUCCESS,
       payload: data,
     })
   } catch (error) {
@@ -115,7 +158,7 @@ const pay = (orderId) => async (dispatch, getState) => {
       dispatch(UserAction.logout())
     }
     dispatch({
-      type: CONSTANT.PAY_FAIL,
+      type: CONSTANT.DELIVER_FAIL,
       payload: message,
     })
   }
@@ -158,9 +201,48 @@ const getMyList = () => async (dispatch, getState) => {
   }
 }
 
+const getList = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: CONSTANT.GET_LIST_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.get(`/api/orders`, config)
+
+    dispatch({
+      type: CONSTANT.GET_LIST_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Not authorized, token failed') {
+      dispatch(UserAction.logout())
+    }
+    dispatch({
+      type: CONSTANT.GET_LIST_FAIL,
+      payload: message,
+    })
+  }
+}
+
 export const OrderAction = {
   create,
   getDetails,
   pay,
+  deliver,
   getMyList,
+  getList,
 }

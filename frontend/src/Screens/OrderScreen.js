@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
@@ -18,7 +18,13 @@ const OrderScreen = () => {
   const { order, loading, error } = orderGetDetails
 
   const orderPay = useSelector((state) => state.orderPay)
-  const { success: successPay, loading: loadingPay, error: errorPay } = orderPay
+  const { success: successPay, loading: loadingPay } = orderPay
+
+  const orderDeliver = useSelector((state) => state.orderDeliver)
+  const { success: successDeliver, loading: loadingDeliver } = orderDeliver
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
 
   if (!loading) {
     order.itemsPrice = order.orderItems.reduce(
@@ -28,15 +34,24 @@ const OrderScreen = () => {
   }
 
   useEffect(() => {
-    if (!order || successPay || order._id !== orderId) {
+    if (!userInfo) {
+      navigate('/login')
+    }
+
+    if (!order || order._id !== orderId || successPay || successDeliver) {
       dispatch({ type: ORDER_CONSTANT.PAY_RESET })
+      dispatch({ type: ORDER_CONSTANT.DELIVER_RESET })
 
       dispatch(OrderAction.getDetails(orderId))
     }
-  }, [dispatch, order, orderId, successPay])
+  }, [dispatch, navigate, order, orderId, successDeliver, successPay, userInfo])
 
-  const successPaymentHandler = () => {
+  const paymentHandler = () => {
     dispatch(OrderAction.pay(orderId))
+  }
+
+  const deliverHandler = () => {
+    dispatch(OrderAction.deliver(orderId))
   }
 
   return loading ? (
@@ -149,17 +164,34 @@ const OrderScreen = () => {
                 </Row>
               </ListGroup.Item>
 
+              {loadingPay && <Loader />}
               {!order.isPaid && (
                 <ListGroup.Item>
                   <Button
                     type='button'
                     className='btn-block w-100'
-                    onClick={successPaymentHandler}
+                    onClick={paymentHandler}
                   >
                     Thanh toán
                   </Button>
                 </ListGroup.Item>
               )}
+
+              {loadingDeliver && <Loader />}
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type='button'
+                      className='btn-block w-100'
+                      onClick={deliverHandler}
+                    >
+                      Xác nhận đã giao
+                    </Button>
+                  </ListGroup.Item>
+                )}
             </ListGroup>
           </Card>
         </Col>
