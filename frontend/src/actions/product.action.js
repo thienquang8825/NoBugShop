@@ -3,26 +3,30 @@ import { UserAction } from '../actions/user.action'
 import { PRODUCT_CONSTANT as CONSTANT } from '../constants/product.constant'
 
 //syntax redux-thunk => allow to add a function within a fuction
-const getList = () => async (dispatch) => {
-  try {
-    dispatch({ type: CONSTANT.GET_LIST_REQUEST })
+const getList =
+  (keyword = '', pageNumber = '') =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: CONSTANT.GET_LIST_REQUEST })
 
-    const { data } = await axios.get('/api/products')
+      const { data } = await axios.get(
+        `/api/products?keyword=${keyword}&pageNumber=${pageNumber}`
+      )
 
-    dispatch({
-      type: CONSTANT.GET_LIST_SUCCESS,
-      payload: data,
-    })
-  } catch (error) {
-    dispatch({
-      type: CONSTANT.GET_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    })
+      dispatch({
+        type: CONSTANT.GET_LIST_SUCCESS,
+        payload: data,
+      })
+    } catch (error) {
+      dispatch({
+        type: CONSTANT.GET_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      })
+    }
   }
-}
 
 const getDetails = (productId) => async (dispatch) => {
   try {

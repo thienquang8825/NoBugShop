@@ -1,20 +1,23 @@
 import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import Paginate from '../components/Paginate'
 import { moneyFormat } from '../utils/moneyFormat'
 import { ProductAction } from '../actions/product.action'
 import { PRODUCT_CONSTANT } from '../constants/product.constant'
 
 const ProductListScreen = () => {
+  const { pageNumber } = useParams()
+
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const productGetList = useSelector((state) => state.productGetList)
-  const { loading, error, products } = productGetList
+  const { loading, error, products, page, pages } = productGetList
 
   const productDelete = useSelector((state) => state.productDelete)
   const {
@@ -44,7 +47,7 @@ const ProductListScreen = () => {
     if (successCreate) {
       navigate(`/admin/product/${createdProduct._id}/edit`)
     } else {
-      dispatch(ProductAction.getList())
+      dispatch(ProductAction.getList('', pageNumber))
     }
   }, [
     dispatch,
@@ -53,6 +56,7 @@ const ProductListScreen = () => {
     successDelete,
     successCreate,
     userInfo,
+    pageNumber,
   ])
 
   function deleteHandler(productId) {
@@ -124,6 +128,7 @@ const ProductListScreen = () => {
               ))}
             </tbody>
           </Table>
+          <Paginate pages={pages} page={page} isAdmin={true} />
         </>
       )}
     </>
