@@ -18,7 +18,7 @@ const getList = (state = { products: [] }, action) => {
   }
 }
 
-const getDetails = (state = { product: {} }, action) => {
+const getDetails = (state = { product: { reviews: [] } }, action) => {
   switch (action.type) {
     case CONSTANT.GET_DETAILS_REQUEST:
       return { ...state, loading: true }
@@ -74,10 +74,40 @@ const updateProduct = (state = { product: {} }, action) => {
   }
 }
 
+const createReview = (state = {}, action) => {
+  switch (action.type) {
+    case CONSTANT.CREATE_REVIEW_REQUEST:
+      return { loading: true }
+    case CONSTANT.CREATE_REVIEW_SUCCESS:
+      return { loading: false, success: true }
+    case CONSTANT.CREATE_REVIEW_FAIL:
+      return { loading: false, error: action.payload }
+    case CONSTANT.CREATE_REVIEW_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+
+const getTopRated = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case CONSTANT.GET_TOP_RATED_REQUEST:
+      return { loading: true, products: [] }
+    case CONSTANT.GET_TOP_RATED_SUCCESS:
+      return { loading: false, products: action.payload }
+    case CONSTANT.GET_TOP_RATED_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
 export const ProductReducer = {
   getList,
   getDetails,
   deleteProduct,
   createProduct,
   updateProduct,
+  createReview,
+  getTopRated,
 }
