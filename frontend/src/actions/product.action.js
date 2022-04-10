@@ -165,10 +165,126 @@ const updateProduct = (product) => async (dispatch, getState) => {
   }
 }
 
+const createReview = (productId, review) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: CONSTANT.CREATE_REVIEW_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    await axios.post(`/api/products/${productId}/reviews`, review, config)
+
+    dispatch({
+      type: CONSTANT.CREATE_REVIEW_SUCCESS,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Not authorized, token failed') {
+      dispatch(UserAction.logout())
+    }
+    dispatch({
+      type: CONSTANT.CREATE_REVIEW_FAIL,
+      payload: message,
+    })
+  }
+}
+
+const getTopRated = () => async (dispatch) => {
+  try {
+    dispatch({ type: CONSTANT.GET_TOP_RATED_REQUEST })
+
+    const { data } = await axios.get(`/api/products/top`)
+
+    dispatch({
+      type: CONSTANT.GET_TOP_RATED_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Not authorized, token failed') {
+      dispatch(UserAction.logout())
+    }
+    dispatch({
+      type: CONSTANT.GET_TOP_RATED_FAIL,
+      payload: message,
+    })
+  }
+}
+
+const getListByCategory =
+  (categoryId, pageNumber = '') =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: CONSTANT.GET_LIST_REQUEST })
+
+      const { data } = await axios.get(
+        `/api/products/category/${categoryId}?pageNumber=${pageNumber}`
+      )
+
+      dispatch({
+        type: CONSTANT.GET_LIST_SUCCESS,
+        payload: data,
+      })
+    } catch (error) {
+      dispatch({
+        type: CONSTANT.GET_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      })
+    }
+  }
+
+const getListByBrand =
+  (brandId, pageNumber = '') =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: CONSTANT.GET_LIST_REQUEST })
+
+      const { data } = await axios.get(
+        `/api/products/brand/${brandId}?pageNumber=${pageNumber}`
+      )
+
+      dispatch({
+        type: CONSTANT.GET_LIST_SUCCESS,
+        payload: data,
+      })
+    } catch (error) {
+      dispatch({
+        type: CONSTANT.GET_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      })
+    }
+  }
+
 export const ProductAction = {
   getList,
   getDetails,
   deleteProduct,
   createProduct,
   updateProduct,
+  createReview,
+  getTopRated,
+  getListByCategory,
+  getListByBrand,
 }

@@ -7,9 +7,10 @@ import Product from '../components/Product'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
+import ProductCarousel from '../components/ProductCarousel'
 
 const HomeScreen = () => {
-  const { keyword, pageNumber } = useParams()
+  const { keyword, categoryId, brandId, pageNumber } = useParams()
 
   const dispatch = useDispatch()
 
@@ -17,11 +18,18 @@ const HomeScreen = () => {
   const { loading, error, products, page, pages } = productGetList
 
   useEffect(() => {
-    dispatch(ProductAction.getList(keyword, pageNumber))
-  }, [dispatch, keyword, pageNumber])
+    if (categoryId) {
+      dispatch(ProductAction.getListByCategory(categoryId, pageNumber))
+    } else if (brandId) {
+      dispatch(ProductAction.getListByBrand(brandId, pageNumber))
+    } else {
+      dispatch(ProductAction.getList(keyword, pageNumber))
+    }
+  }, [brandId, categoryId, dispatch, keyword, pageNumber])
 
   return (
     <>
+      {!keyword && !categoryId && !brandId && <ProductCarousel />}
       <h1>Danh Sách Sản Phẩm</h1>
       {loading ? (
         <Loader />
@@ -40,6 +48,8 @@ const HomeScreen = () => {
             <Paginate
               pages={pages}
               page={page}
+              categoryId={categoryId ? categoryId : ''}
+              brandId={brandId ? brandId : ''}
               keyword={keyword ? keyword : ''}
             />
           </Row>

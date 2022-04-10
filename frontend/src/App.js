@@ -55,6 +55,16 @@ const App = () => {
               path='/search/:keyword/page/:pageNumber'
               element={<HomeScreen />}
             />
+            <Route path='/brand/:brandId' element={<HomeScreen />} />
+            <Route
+              path='/brand/:brandId/page/:pageNumber'
+              element={<HomeScreen />}
+            />
+            <Route path='/category/:categoryId' element={<HomeScreen />} />
+            <Route
+              path='/category/:categoryId/page/:pageNumber'
+              element={<HomeScreen />}
+            />
           </Routes>
         </Container>
       </main>
