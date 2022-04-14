@@ -106,7 +106,10 @@ const OrderScreen = () => {
                 )}
                 {order.isDelivered ? (
                   <Message variant='success'>
-                    Đã giao hàng vào lúc: {order.deliveredAt.substring(0, 10)}
+                    Đã giao hàng vào lúc:{' '}
+                    {new Date(order.deliveredAt)
+                      .toLocaleDateString()
+                      .substring(0, 10)}
                   </Message>
                 ) : (
                   <Message variant='danger'>Chưa giao hàng</Message>
@@ -123,7 +126,10 @@ const OrderScreen = () => {
                 </div>
                 {order.isPaid ? (
                   <Message variant='success'>
-                    Đã thanh toán vào lúc: {order.paidAt.substring(0, 10)}
+                    Đã thanh toán vào lúc:{' '}
+                    {new Date(order.paidAt)
+                      .toLocaleDateString()
+                      .substring(0, 10)}
                   </Message>
                 ) : (
                   <Message variant='danger'>Chưa thanh toán</Message>

@@ -212,7 +212,7 @@ const ProductEditScreen = ({ match, history }) => {
                   <label>Mô tả</label>
                   <CKEditor
                     className='bg-primary'
-                    editor={classNameicEditor}
+                    editor={ClassicEditor}
                     data={description}
                     onChange={(event, editor) => {
                       const data = editor.getData()

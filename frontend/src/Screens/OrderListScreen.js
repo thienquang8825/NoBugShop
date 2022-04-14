@@ -59,21 +59,27 @@ const OrderListScreen = ({ history }) => {
                         {order.userId && order.userId.name}
                       </td>
                       <td className='align-middle'>
-                        {order.createdAt.substring(0, 10)}
+                        {new Date(order.createdAt)
+                          .toLocaleDateString()
+                          .substring(0, 10)}
                       </td>
                       <td className='align-middle'>
                         {moneyFormat(order.totalPrice)}
                       </td>
                       <td>
                         {order.isPaid ? (
-                          order.paidAt.substring(0, 10)
+                          new Date(order.paidAt)
+                            .toLocaleDateString()
+                            .substring(0, 10)
                         ) : (
                           <i className='fas fa-times text-danger'></i>
                         )}
                       </td>
                       <td>
                         {order.isDelivered ? (
-                          order.deliveredAt.substring(0, 10)
+                          new Date(order.deliveredAt)
+                            .toLocaleDateString()
+                            .substring(0, 10)
                         ) : (
                           <i className='fas fa-times text-danger'></i>
                         )}
