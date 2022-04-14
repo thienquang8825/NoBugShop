@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Form, Button, Row, Col, Table } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { moneyFormat } from '../utils/moneyFormat'
 import Message from '../components/Message'
@@ -9,6 +7,7 @@ import Loader from '../components/Loader'
 import { UserAction } from '../actions/user.action'
 import { OrderAction } from '../actions/order.action'
 import { USER_CONSTANTS } from '../constants/user.constants'
+import PageHeader from '../components/PageHeader'
 
 const ProfileScreen = () => {
   const [name, setName] = useState('')
@@ -45,8 +44,12 @@ const ProfileScreen = () => {
         setName(userProfile.name)
         setEmail(userProfile.email)
       }
+
+      // if (!orders || orders.length === 0) {
+      //   dispatch(OrderAction.getMyList())
+      // }
     }
-  }, [dispatch, navigate, success, userInfo, userProfile])
+  }, [dispatch, navigate, orders, success, userInfo, userProfile])
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -61,119 +64,127 @@ const ProfileScreen = () => {
   }
 
   return (
-    <Row>
-      <Col md={3}>
-        <h2>Thông Tin</h2>
-        {message && <Message variant='danger'>{message}</Message>}
-        {error && <Message variant='danger'>{error}</Message>}
-        {success && (
-          <Message variant='success'>Thông tin đã được cập nhật</Message>
-        )}
-        {loading && <Loader />}
-        <Form onSubmit={submitHandler}>
-          <Form.Group controlId='name' className='my-3'>
-            <Form.Label>Tên</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='Nhập tên...'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
+    <>
+      <PageHeader title='Tài Khoản Của Tôi' />
 
-          <Form.Group controlId='email' className='my-3'>
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='Nhập email...'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-
-          <Form.Group controlId='password' className='my-3'>
-            <Form.Label>Mật khẩu</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Nhập mật khẩu...'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-
-          <Form.Group controlId='Xác nhận mật khẩu' className='my-3'>
-            <Form.Label>Xác nhận mật khẩu</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Nhập lại mật khẩu...'
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-
-          <Button type='submit' variant='primary'>
-            Cập nhật
-          </Button>
-        </Form>
-      </Col>
-      <Col md={9}>
-        <h2>Đơn Hàng</h2>
-        {loadingOrders ? (
-          <Loader />
-        ) : errorOrders ? (
-          <Message variant='danger'>{errorOrders}</Message>
-        ) : (
-          <Table
-            striped
-            bordered
-            hover
-            responsive
-            className='table-primary table-sm'
-          >
-            <thead>
-              <tr>
-                <th>Mã đơn hằng</th>
-                <th>Ngày tạo</th>
-                <th>Tổng tiền</th>
-                <th>Thanh toán</th>
-                <th>Giao hàng</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order._id}>
-                  <td>{order._id}</td>
-                  <td>{order.createdAt.substring(0, 10)}</td>
-                  <td>{moneyFormat(order.totalPrice)}</td>
-                  <td>
-                    {order.isPaid ? (
-                      order.paidAt.substring(0, 10)
-                    ) : (
-                      <i className='fas fa-times' style={{ color: 'red' }}></i>
-                    )}
-                  </td>
-                  <td>
-                    {order.isDelivered ? (
-                      order.deliveredAt.substring(0, 10)
-                    ) : (
-                      <i className='fas fa-times' style={{ color: 'red' }}></i>
-                    )}
-                  </td>
-                  <td>
-                    <LinkContainer to={`/order/${order._id}`}>
-                      <Button className='btn-sm' variant='primary'>
-                        Chi tiết
-                      </Button>
-                    </LinkContainer>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        )}
-      </Col>
-    </Row>
+      <div className='container-fluid pt-5'>
+        <div className='row px-xl-5'>
+          <div className='col-lg-4'>
+            <h4 className='font-weight-semi-bold mb-4'>Thông Tin Cá Nhận</h4>
+            {message && <Message variant='danger'>{message}</Message>}
+            {error && <Message variant='danger'>{error}</Message>}
+            {success && (
+              <Message variant='success'>Thông tin đã được cập nhật</Message>
+            )}
+            {loading && <Loader />}
+            <form onSubmit={submitHandler}>
+              <div className='form-group'>
+                <label>Tên</label>
+                <input
+                  className='form-control bg-secondary'
+                  type='text'
+                  placeholder='Nhập tên...'
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div className='form-group'>
+                <label>Email</label>
+                <input
+                  className='form-control bg-secondary'
+                  type='text'
+                  placeholder='Nhập email...'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className='form-group'>
+                <label>Mật khẩu</label>
+                <input
+                  className='form-control bg-secondary'
+                  type='password'
+                  placeholder='Nhập mật khẩu...'
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className='form-group'>
+                <label>Xác nhận mật khẩu</label>
+                <input
+                  className='form-control bg-secondary'
+                  type='password'
+                  placeholder='Nhập lại mật khẩu...'
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+              <div className='form-group'>
+                <button className='btn btn-primary py-2 px-4' type='submit'>
+                  Cập nhật thông tin
+                </button>
+              </div>
+            </form>
+          </div>
+          <div className='col-lg-8 table-responsive mb-5'>
+            <h4 className='font-weight-semi-bold mb-4 text-center'>
+              Lịch Sử Mua Hàng
+            </h4>
+            {loadingOrders ? (
+              <Loader />
+            ) : errorOrders ? (
+              <Message variant='danger'>{errorOrders}</Message>
+            ) : (
+              <table className='table table-bordered text-center mb-0 table-hover'>
+                <thead className='bg-secondary text-dark'>
+                  <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Ngày tạo</th>
+                    <th>Tổng tiền</th>
+                    <th>Thanh toán</th>
+                    <th>Giao hàng</th>
+                    <th>Chi tiết</th>
+                  </tr>
+                </thead>
+                <tbody className='align-middle'>
+                  {orders.map((order) => (
+                    <tr key={order._id}>
+                      <td className='align-middle'>{order._id}</td>
+                      <td className='align-middle'>
+                        {order.createdAt.substring(0, 10)}
+                      </td>
+                      <td className='align-middle'>
+                        {moneyFormat(order.totalPrice)}
+                      </td>
+                      <td className='align-middle'>
+                        {order.isPaid ? (
+                          order.paidAt.substring(0, 10)
+                        ) : (
+                          <i className='fas fa-times text-danger'></i>
+                        )}
+                      </td>
+                      <td className='align-middle'>
+                        {order.isDelivered ? (
+                          order.deliveredAt.substring(0, 10)
+                        ) : (
+                          <i className='fas fa-times text-danger'></i>
+                        )}
+                      </td>
+                      <td className='align-middle'>
+                        <Link to={`/order/${order._id}`}>
+                          <button className='btn-sm border-0 bg-primary'>
+                            Chi tiết
+                          </button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
   )
 }
 

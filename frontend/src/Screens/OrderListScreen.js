@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react'
-import { LinkContainer } from 'react-router-bootstrap'
-import { Table, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { OrderAction } from '../actions/order.action'
@@ -28,57 +26,73 @@ const OrderListScreen = ({ history }) => {
 
   return (
     <>
-      <h1>Danh Sách Đơn Hàng</h1>
-      {loading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant='danger'>{error}</Message>
-      ) : (
-        <Table striped bordered hover responsive className='table-sm'>
-          <thead className='table-primary'>
-            <tr>
-              <th>Id</th>
-              <th>Khách hàng</th>
-              <th>Ngày tạo</th>
-              <th>Tổng tiền</th>
-              <th>Thanh toán</th>
-              <th>Giao hàng</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order._id}>
-                <td>{order._id}</td>
-                <td>{order.userId && order.userId.name}</td>
-                <td>{order.createdAt.substring(0, 10)}</td>
-                <td>{moneyFormat(order.totalPrice)}</td>
-                <td>
-                  {order.isPaid ? (
-                    order.paidAt.substring(0, 10)
-                  ) : (
-                    <i className='fas fa-times' style={{ color: 'red' }}></i>
-                  )}
-                </td>
-                <td>
-                  {order.isDelivered ? (
-                    order.deliveredAt.substring(0, 10)
-                  ) : (
-                    <i className='fas fa-times' style={{ color: 'red' }}></i>
-                  )}
-                </td>
-                <td>
-                  <LinkContainer to={`/order/${order._id}`}>
-                    <Button variant='primary' className='btn-sm'>
-                      Chi tiết
-                    </Button>
-                  </LinkContainer>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      )}
+      <div className='container-fluid pt-5'>
+        <div className='row px-xl-5'>
+          <div className='col-lg-12 table-responsive mb-5'>
+            <div className='text-center mb-4'>
+              <h2 className='section-title px-5'>
+                <span className='px-2'>Quản Lý Đơn Hàng</span>
+              </h2>
+            </div>
+            {loading ? (
+              <Loader />
+            ) : error ? (
+              <Message variant='danger'>{error}</Message>
+            ) : (
+              <table className='table table-bordered text-center mb-0 table-hover'>
+                <thead className='bg-secondary text-dark'>
+                  <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Tên khách hàng</th>
+                    <th>Ngày tạo</th>
+                    <th>Tổng tiền</th>
+                    <th>Thanh toán</th>
+                    <th>Giao hàng</th>
+                    <th>Chi tiết</th>
+                  </tr>
+                </thead>
+                <tbody className='align-middle'>
+                  {orders.map((order) => (
+                    <tr key={order._id}>
+                      <td className='align-middle'>{order._id}</td>
+                      <td className='align-middle'>
+                        {order.userId && order.userId.name}
+                      </td>
+                      <td className='align-middle'>
+                        {order.createdAt.substring(0, 10)}
+                      </td>
+                      <td className='align-middle'>
+                        {moneyFormat(order.totalPrice)}
+                      </td>
+                      <td>
+                        {order.isPaid ? (
+                          order.paidAt.substring(0, 10)
+                        ) : (
+                          <i className='fas fa-times text-danger'></i>
+                        )}
+                      </td>
+                      <td>
+                        {order.isDelivered ? (
+                          order.deliveredAt.substring(0, 10)
+                        ) : (
+                          <i className='fas fa-times text-danger'></i>
+                        )}
+                      </td>
+                      <td className='align-middle'>
+                        <Link to={`/order/${order._id}`}>
+                          <button className='btn-sm border-0 bg-primary'>
+                            Chi tiết
+                          </button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      </div>
     </>
   )
 }

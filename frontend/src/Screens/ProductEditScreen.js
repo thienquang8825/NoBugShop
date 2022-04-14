@@ -1,13 +1,13 @@
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import FormContainer from '../components/FormContainer'
 import { ProductAction } from '../actions/product.action'
 import { PRODUCT_CONSTANT } from '../constants/product.constant'
+// import { CKEditor } from '@ckeditor/ckeditor5-react'
+// import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 const ProductEditScreen = ({ match, history }) => {
   const { id: productId } = useParams()
@@ -97,110 +97,140 @@ const ProductEditScreen = ({ match, history }) => {
 
   return (
     <>
-      <Link to='/admin/productlist' className='btn btn-primary my-3'>
-        Quay lại
-      </Link>
-      <FormContainer>
-        <h1>Cập Nhật Sản Phẩm</h1>
-        {loadingUpdate && <Loader />}
-        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
-        {loading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant='danger'>{error}</Message>
-        ) : (
-          <Form onSubmit={submitHandler}>
-            <Form.Group controlId='name' className='my-3'>
-              <Form.Label>Tên</Form.Label>
-              <Form.Control
-                type='name'
-                placeholder='Nhập tên...'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+      <div className='container-fluid pt-5'>
+        <div className='row px-xl-5 justify-content-center'>
+          <div className='col-lg-5 col-md-8'>
+            <div className='text-center mb-4'>
+              <h2 className='section-title px-5'>
+                <span className='px-2'>Thông Tin Sản Phẩm</span>
+              </h2>
+            </div>
+            {loadingUpdate && <Loader />}
+            {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+            {loading ? (
+              <Loader />
+            ) : error ? (
+              <Message variant='danger'>{error}</Message>
+            ) : (
+              <form onSubmit={submitHandler}>
+                <div className='form-group'>
+                  <label>Tên</label>
+                  <input
+                    className='form-control bg-secondary'
+                    type='text'
+                    placeholder='Nhập tên...'
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
 
-            <Form.Group controlId='category' className='my-3'>
-              <Form.Label>Thể loại</Form.Label>
-              <Form.Select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                {categories.map((c) => (
-                  <option key={c._id} value={c.name}>
-                    {c.name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
+                <div className='form-group'>
+                  <label>Thể loại</label>
+                  <div>
+                    <select
+                      className='form-control bg-secondary'
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                    >
+                      {categories.map((category) => (
+                        <option key={category._id} value={category.name}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-            <Form.Group controlId='brand' className='my-3'>
-              <Form.Label>Thể loại</Form.Label>
-              <Form.Select
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
-              >
-                {brands.map((b) => (
-                  <option key={b._id} value={b.name}>
-                    {b.name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
+                <div className='form-group'>
+                  <label>Thương hiệu</label>
+                  <div>
+                    <select
+                      className='form-control bg-secondary'
+                      value={brand}
+                      onChange={(e) => setBrand(e.target.value)}
+                    >
+                      {brands.map((brand) => (
+                        <option key={brand._id} value={brand.name}>
+                          {brand.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-            <Form.Group controlId='image' className='my-3'>
-              <Form.Label>Hình ảnh</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Nhập url hình ảnh'
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-              ></Form.Control>
-              <Form.Control
-                type='file'
-                label='Chọn file'
-                custom='true'
-                onChange={uploadFileHandler}
-              ></Form.Control>
-              {uploading && <Loader />}
-            </Form.Group>
+                <div className='form-group'>
+                  <label>Hình ảnh</label>
+                  <input
+                    className='form-control bg-secondary'
+                    type='text'
+                    placeholder='Nhập url hình ảnh...'
+                    value={image}
+                    onChange={(e) => setImage(e.target.value)}
+                  />
+                  <input
+                    className='form-control bg-secondary'
+                    type='file'
+                    onChange={uploadFileHandler}
+                  />
+                  {uploading && <Loader />}
+                </div>
 
-            <Form.Group controlId='price' className='my-3'>
-              <Form.Label>Giá</Form.Label>
-              <Form.Control
-                type='number'
-                placeholder='Nhập giá...'
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+                <div className='form-group'>
+                  <label>Giá</label>
+                  <input
+                    className='form-control bg-secondary'
+                    type='number'
+                    placeholder='Nhập giá...'
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                  />
+                </div>
 
-            <Form.Group controlId='countInStock' className='my-3'>
-              <Form.Label>Số lượng tồn</Form.Label>
-              <Form.Control
-                type='number'
-                placeholder='Nhập số lượng...'
-                value={countInStock}
-                onChange={(e) => setCountInStock(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+                <div className='form-group'>
+                  <label>Số lượng tồn</label>
+                  <input
+                    className='form-control bg-secondary'
+                    type='number'
+                    placeholder='Nhập số lượng tồn...'
+                    value={countInStock}
+                    onChange={(e) => setCountInStock(e.target.value)}
+                  />
+                </div>
 
-            <Form.Group controlId='description' className='my-3'>
-              <Form.Label>Mô tả</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Nhập mô tả...'
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+                <div className='form-group'>
+                  <label>Mô tả</label>
+                  <textarea
+                    className='form-control bg-secondary'
+                    rows='3'
+                    placeholder='Nhập mô tả sản phẩm...'
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  ></textarea>
+                </div>
 
-            <Button type='submit' variant='primary'>
-              Cập nhật
-            </Button>
-          </Form>
-        )}
-      </FormContainer>
+                {/* <div className='form-group'>
+                  <label>Mô tả</label>
+                  <CKEditor
+                    className='bg-primary'
+                    editor={classNameicEditor}
+                    data={description}
+                    onChange={(event, editor) => {
+                      const data = editor.getData()
+                      setDescription(data)
+                    }}
+                  />
+                </div> */}
+
+                <div className='form-group'>
+                  <button className='btn btn-primary py-2 px-4' type='submit'>
+                    Cập nhật thông tin
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
     </>
   )
 }

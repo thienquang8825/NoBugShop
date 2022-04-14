@@ -3,7 +3,7 @@ import * as ReactDOMClient from 'react-dom/client'
 import { Provider } from 'react-redux'
 import store from './store'
 import './index.css'
-import './bootstrap.min.css'
+// import './bootstrap.min.css'
 import App from './App'
 
 const container = document.getElementById('root')

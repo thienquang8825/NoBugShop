@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { Form, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import FormContainer from '../components/FormContainer'
 import { UserAction } from '../actions/user.action'
 
 const LoginScreen = () => {
@@ -36,49 +34,58 @@ const LoginScreen = () => {
   }
 
   return (
-    <FormContainer>
-      <h1>Đăng Nhập</h1>
-      {loading && <Loader />}
-      {error && <Message variant='danger'>{error}</Message>}
-      <Form onSubmit={submitHandler}>
-        <Form.Group controlId='email' className='my-3'>
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type='email'
-            placeholder='Nhập email...'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Form.Group controlId='password' className='my-3'>
-          <Form.Label>Mật khẩu</Form.Label>
-          <Form.Control
-            type='password'
-            placeholder='Nhập mật khẩu...'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Button type='submit' variant='primary'>
-          Đăng nhập
-        </Button>
-      </Form>
-
-      <Row className='py-3'>
-        <Col>
-          Chưa có tài khoản?{' '}
-          <Link
-            to={
-              redirect !== '/' ? `/register?redirect=${redirect}` : '/register'
-            }
-          >
-            Đăng ký
-          </Link>
-        </Col>
-      </Row>
-    </FormContainer>
+    <div className='container-fluid pt-5'>
+      <div className='row px-xl-5 justify-content-center'>
+        <div className='col-lg-4 col-md-8'>
+          <div className='text-center mb-4'>
+            <h2 className='section-title px-5'>
+              <span className='px-2'>Đăng Nhập</span>
+            </h2>
+          </div>
+          {error && <Message variant='danger'>{error}</Message>}
+          {loading && <Loader />}
+          <form onSubmit={submitHandler}>
+            <div className='form-group'>
+              <label>Email</label>
+              <input
+                className='form-control bg-secondary'
+                type='text'
+                placeholder='Nhập email...'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Mật khẩu</label>
+              <input
+                className='form-control bg-secondary'
+                type='password'
+                placeholder='Nhập mật khẩu...'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div className='form-group'>
+              <button className='btn btn-primary py-2 px-4' type='submit'>
+                Đăng nhập
+              </button>
+            </div>
+            <div className='form-group'>
+              Chưa có tài khoản?{' '}
+              <Link
+                to={
+                  redirect !== '/'
+                    ? `/register?redirect=${redirect}`
+                    : '/register'
+                }
+              >
+                Đăng ký
+              </Link>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   )
 }
 

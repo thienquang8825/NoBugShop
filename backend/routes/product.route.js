@@ -17,7 +17,9 @@ router
   .route('/:id/reviews')
   .post(AuthMiddleware.protect, ProductController.createReview)
 
-router.get('/top', ProductController.getTopProducts)
+router.get('/toprated', ProductController.getTopRated)
+
+router.get('/topnew', ProductController.getTopNew)
 
 router.get('/category/:id', ProductController.getProductsByCategory)
 

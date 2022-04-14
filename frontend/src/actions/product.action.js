@@ -206,7 +206,7 @@ const getTopRated = () => async (dispatch) => {
   try {
     dispatch({ type: CONSTANT.GET_TOP_RATED_REQUEST })
 
-    const { data } = await axios.get(`/api/products/top`)
+    const { data } = await axios.get(`/api/products/toprated`)
 
     dispatch({
       type: CONSTANT.GET_TOP_RATED_SUCCESS,
@@ -222,6 +222,30 @@ const getTopRated = () => async (dispatch) => {
     }
     dispatch({
       type: CONSTANT.GET_TOP_RATED_FAIL,
+      payload: message,
+    })
+  }
+}
+
+const getTopNew = () => async (dispatch) => {
+  try {
+    dispatch({ type: CONSTANT.GET_TOP_NEW_REQUEST })
+
+    const { data } = await axios.get(`/api/products/topnew`)
+    dispatch({
+      type: CONSTANT.GET_TOP_NEW_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Not authorized, token failed') {
+      dispatch(UserAction.logout())
+    }
+    dispatch({
+      type: CONSTANT.GET_TOP_NEW_FAIL,
       payload: message,
     })
   }
@@ -285,6 +309,7 @@ export const ProductAction = {
   updateProduct,
   createReview,
   getTopRated,
+  getTopNew,
   getListByCategory,
   getListByBrand,
 }

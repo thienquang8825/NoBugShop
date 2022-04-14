@@ -1,19 +1,26 @@
 import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import Message from '../components/Message'
-import CheckoutSteps from '../components/CheckoutSteps'
 import { moneyFormat } from '../utils/moneyFormat'
 import { OrderAction } from '../actions/order.action'
 import { ORDER_CONSTANT } from '../constants/order.constant'
-import { CART_CONSTANT } from '../constants/cart.constant'
+import PageHeader from '../components/PageHeader'
 
 const PlaceOrderScreen = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const cart = useSelector((state) => state.cart)
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
+  useEffect(() => {
+    if (!userInfo || cart.cartItems.length === 0) {
+      console.log(cart.cartItems.length)
+      navigate('/login')
+    }
+  })
 
   cart.itemsPrice = cart.cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -23,7 +30,8 @@ const PlaceOrderScreen = () => {
   cart.totalPrice = cart.itemsPrice + cart.shippingPrice
 
   const orderCreate = useSelector((state) => state.orderCreate)
-  const { order, success, error } = orderCreate
+  const { order, success } = orderCreate
+  // const { order, success, error } = orderCreate
 
   useEffect(() => {
     if (success) {
@@ -38,7 +46,7 @@ const PlaceOrderScreen = () => {
     dispatch(
       OrderAction.create({
         orderItems: cart.cartItems,
-        shippingAddress: cart.shippingAddress,
+        shippingInfo: cart.shippingInfo,
         paymentMethod: cart.paymentMethod,
         itemsPrice: cart.itemsPrice,
         shippingPrice: cart.shippingPrice,
@@ -49,101 +57,122 @@ const PlaceOrderScreen = () => {
 
   return (
     <>
-      <CheckoutSteps step1 step2 step3 step4 />
-      <Row>
-        <Col md={8}>
-          <ListGroup variant='flush'>
-            <ListGroup.Item>
-              <h2>Địa Chỉ Giao Hàng</h2>
-              <p>
-                <strong>Địa chỉ: </strong>
-                {cart.shippingAddress.address}, {cart.shippingAddress.ward},{' '}
-                {cart.shippingAddress.district}, {cart.shippingAddress.city}
-              </p>
-            </ListGroup.Item>
+      <PageHeader title='Đặt Hàng' />
 
-            <ListGroup.Item>
-              <h2>Phương Thức Thanh Toán</h2>
-              <p>
-                <strong>Phương thức: </strong>
-                {cart.paymentMethod}
-              </p>
-            </ListGroup.Item>
-
-            <ListGroup.Item>
-              <h2>Sản Phẩm</h2>
-              {cart.cartItems.length === 0 ? (
-                <Message>Giỏ hàng rỗng</Message>
-              ) : (
-                <ListGroup variant='flush'>
-                  {cart.cartItems.map((item, index) => (
-                    <ListGroup.Item key={index}>
-                      <Row>
-                        <Col md={1}>
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            fluid
-                            rounded
-                          />
-                        </Col>
-                        <Col>
-                          <Link to={`/product/${item.id}`}>{item.name}</Link>
-                        </Col>
-                        <Col md={4}>
-                          {item.quantity} x {moneyFormat(item.price)} =
-                          {moneyFormat(item.price * item.quantity)}
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
-                  ))}
-                </ListGroup>
-              )}
-            </ListGroup.Item>
-          </ListGroup>
-        </Col>
-
-        <Col md={4}>
-          <Card>
-            <ListGroup variant='flush'>
-              <ListGroup.Item>
-                <h2>Tổng Đơn Hàng</h2>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Giá sản phẩm</Col>
-                  <Col>{moneyFormat(cart.itemsPrice)}</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Phí giao hàng</Col>
-                  <Col>{moneyFormat(cart.shippingPrice)}</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Tổng tiền:</Col>
-                  <Col>{moneyFormat(cart.totalPrice)}</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                {error && <Message variant='danger'>{error}</Message>}
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Button
-                  type='button'
-                  className='btn-block w-100'
-                  disabled={cart.cartItems === 0}
+      <div className='container-fluid pt-5'>
+        <div className='row px-xl-5'>
+          <div className='col-lg-8'>
+            <div className='card border-secondary mb-5'>
+              <div className='card-header bg-secondary border-0'>
+                <h4 className='font-weight-semi-bold m-0'>Chi Tiết Hóa Đơn</h4>
+              </div>
+              <div className='card-body'>
+                <h5 className='font-weight-medium mb-3'>Thông tin giao hàng</h5>
+                <div className='d-flex justify-content-between'>
+                  <p>
+                    <strong>Tên: </strong>
+                    {cart.shippingInfo.name}
+                  </p>
+                </div>
+                <div className='d-flex justify-content-between'>
+                  <p>
+                    <strong>Email: </strong>
+                    {cart.shippingInfo.email}
+                  </p>
+                </div>
+                <div className='d-flex justify-content-between'>
+                  <p>
+                    <strong>Số điện thoại: </strong>
+                    {cart.shippingInfo.phone}
+                  </p>
+                </div>
+                <div className='d-flex justify-content-between'>
+                  <p>
+                    <strong>Địa chỉ: </strong>
+                    {cart.shippingInfo.address}, {cart.shippingInfo.ward},{' '}
+                    {cart.shippingInfo.district}, {cart.shippingInfo.city}
+                  </p>
+                </div>
+                {cart.shippingInfo.note && (
+                  <div className='d-flex justify-content-between'>
+                    <p>
+                      <strong>Ghi chú: </strong>
+                      {cart.shippingInfo.note}
+                    </p>
+                  </div>
+                )}
+                <hr className='mt-0' />
+                <h5 className='font-weight-medium mb-3'>
+                  Phương thức thanh toán
+                </h5>
+                <div className='d-flex justify-content-between'>
+                  <p>
+                    <strong>Phương thức: </strong>
+                    {cart.paymentMethod}
+                  </p>
+                </div>
+                <hr className='mt-0' />
+                <h5 className='font-weight-medium mb-3'>Sản phẩm</h5>
+                {cart.cartItems.map((item) => (
+                  <div
+                    key={item.productId}
+                    className='d-flex justify-content-between'
+                  >
+                    <p>
+                      ({item.quantity}) x{' '}
+                      <Link to={`/product/${item.productId}`}>{item.name}</Link>
+                    </p>
+                    <p>{moneyFormat(item.quantity * item.price)}</p>
+                  </div>
+                ))}
+                <hr className='mt-0' />
+                <div className='d-flex justify-content-between pt-1'>
+                  <h5 className='font-weight-medium'>Tổng tiền hàng</h5>
+                  <h5 className='font-weight-medium'>
+                    {moneyFormat(cart.itemsPrice)}
+                  </h5>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='col-lg-4'>
+            <div className='card border-secondary mb-5'>
+              <div className='card-header bg-secondary border-0'>
+                <h4 className='font-weight-semi-bold m-0'>Tổng Hóa Đơn</h4>
+              </div>
+              <div className='card-body'>
+                <div className='d-flex justify-content-between mb-3 pt-1'>
+                  <h6 className='font-weight-medium'>Tổng tiền hàng</h6>
+                  <h6 className='font-weight-medium'>
+                    {moneyFormat(cart.itemsPrice)}
+                  </h6>
+                </div>
+                <div className='d-flex justify-content-between'>
+                  <h6 className='font-weight-medium'>Phí vận chuyển</h6>
+                  <h6 className='font-weight-medium'>
+                    {moneyFormat(cart.shippingPrice)}
+                  </h6>
+                </div>
+              </div>
+              <div className='card-footer border-secondary bg-transparent'>
+                <div className='d-flex justify-content-between mt-2'>
+                  <h5 className='font-weight-bold'>Tổng số tiền</h5>
+                  <h5 className='font-weight-bold'>
+                    {moneyFormat(cart.totalPrice)}
+                  </h5>
+                </div>
+                <button
+                  className='btn btn-block btn-primary my-3 py-3'
+                  disabled={cart.cartItems.length === 0}
                   onClick={placeOrderHandler}
                 >
-                  Đặt hàng
-                </Button>
-              </ListGroup.Item>
-            </ListGroup>
-          </Card>
-        </Col>
-      </Row>
+                  Đặt Hàng
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   )
 }

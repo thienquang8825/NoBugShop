@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
 import { CartAction } from '../actions/cart.action'
 import { moneyFormat } from '../utils/moneyFormat'
+import PageHeader from '../components/PageHeader'
 
 import Message from '../components/Message'
 
@@ -11,8 +11,19 @@ const CartScreen = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
   const cart = useSelector((state) => state.cart)
   const { cartItems } = cart
+
+  cart.itemsPrice = cart.cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  )
+  cart.shippingPrice =
+    cart.itemsPrice > 1000000 || cartItems.length === 0 ? 0 : 50000
+  cart.totalPrice = cart.itemsPrice + cart.shippingPrice
 
   const changeQuantityHandler = (e, item) => {
     dispatch(CartAction.addToCart(item, Number(e.target.value)))
@@ -23,85 +34,121 @@ const CartScreen = () => {
   }
 
   const checkoutHandler = () => {
-    navigate('/login?redirect=shipping')
+    if (userInfo) {
+      navigate('/checkout')
+    } else {
+      navigate('/login?redirect=checkout')
+    }
   }
 
   return (
-    <Row>
-      <Col md={9}>
-        <h1>Giỏ Hàng</h1>
-        {cartItems.length === 0 ? (
-          <Message>
-            Giỏ hàng rỗng. <Link to='/'>Quay lại.</Link>
-          </Message>
-        ) : (
-          <ListGroup variant='flush'>
-            {cartItems.map((item) => (
-              <ListGroup.Item key={item.productId}>
-                <Row className='d-flex align-items-center'>
-                  <Col md={2}>
-                    <Image src={item.image} alt={item.name} fluid />
-                  </Col>
-                  <Col md={5}>
-                    <Link to={`/product/${item.id}`}>{item.name}</Link>
-                  </Col>
-                  <Col md={2}>{moneyFormat(item.price)}</Col>
-                  <Col md={2}>
-                    <Form.Select
-                      value={item.quantity}
-                      onChange={(e) => changeQuantityHandler(e, item)}
-                    >
-                      {[...Array(item.countInStock).keys()].map((x) => (
-                        <option key={x + 1} value={x + 1}>
-                          {x + 1}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Col>
-                  <Col md={1}>
-                    <Button
-                      variant='light'
-                      onClick={() => removeFromCartHandler(item.productId)}
-                    >
-                      <i className='fas fa-trash'></i>
-                    </Button>
-                  </Col>
-                </Row>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        )}
-      </Col>
-      <Col md={3}>
-        <Card>
-          <ListGroup variant='flush'>
-            <ListGroup.Item>
-              <h2>
-                Tổng ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})
-                sản phẩm
-              </h2>
+    <>
+      <PageHeader title='Giỏ Hàng' />
+      <div className='container-fluid pt-5'>
+        <div className='row px-xl-5'>
+          <div className='col-lg-8 table-responsive mb-5'>
+            {cartItems.length === 0 ? (
+              <Message>
+                Giỏ hàng rỗng. <Link to='/'>Chọn sản phâm!</Link>
+              </Message>
+            ) : (
+              <table className='table table-bordered text-center mb-0'>
+                <thead className='bg-secondary text-dark'>
+                  <tr>
+                    <th>Sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                    <th>Xóa</th>
+                  </tr>
+                </thead>
+                <tbody className='align-middle'>
+                  {cartItems.map((item) => (
+                    <tr key={item.productId}>
+                      <td className='align-middle'>
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          style={{ width: '50px' }}
+                        />{' '}
+                        <Link to={`/product/${item.productId}`}>
+                          {item.name}
+                        </Link>
+                      </td>
+                      <td className='align-middle'>
+                        {moneyFormat(item.price)}
+                      </td>
+                      <td className='align-middle'>
+                        <select
+                          value={item.quantity}
+                          style={{ width: '60px' }}
+                          className='py-1 bg-secondary text-center ml-2 rounded'
+                          onChange={(e) => changeQuantityHandler(e, item)}
+                        >
+                          {[...Array(item.countInStock).keys()].map((x) => (
+                            <option key={x + 1} value={x + 1}>
+                              {x + 1}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className='align-middle'>
+                        {moneyFormat(item.quantity * item.price)}
+                      </td>
+                      <td className='align-middle'>
+                        <button
+                          className='btn btn-sm btn-primary'
+                          onClick={() => removeFromCartHandler(item.productId)}
+                        >
+                          <i className='fa fa-times'></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
 
-              {moneyFormat(
-                cartItems.reduce(
-                  (acc, item) => acc + item.quantity * item.price,
-                  0
-                )
-              )}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Button
-                variant='primary'
-                style={{ width: '100%' }}
-                disabled={cartItems.length === 0}
-                onClick={checkoutHandler}
-              >
-                Thanh toán
-              </Button>
-            </ListGroup.Item>
-          </ListGroup>
-        </Card>
-      </Col>
-    </Row>
+          <div className='col-lg-4'>
+            <div className='card border-secondary mb-5'>
+              <div className='card-header bg-secondary border-0'>
+                <h4 className='font-weight-semi-bold m-0'>Thanh Toán</h4>
+              </div>
+              <div className='card-body'>
+                <div className='d-flex justify-content-between mb-3 pt-1'>
+                  <h6 className='font-weight-medium'>Tổng tiền hàng</h6>
+                  <h6 className='font-weight-medium'>
+                    {moneyFormat(cart.itemsPrice)}
+                  </h6>
+                </div>
+                <div className='d-flex justify-content-between'>
+                  <h6 className='font-weight-medium'>Phí vận chuyển</h6>
+                  <h6 className='font-weight-medium'>
+                    {moneyFormat(cart.shippingPrice)}
+                  </h6>
+                </div>
+              </div>
+              <div className='card-footer border-secondary bg-transparent'>
+                <div className='d-flex justify-content-between mt-2'>
+                  <h5 className='font-weight-bold'>Tổng số tiền</h5>
+                  <h5 className='font-weight-bold'>
+                    {moneyFormat(cart.totalPrice)}
+                  </h5>
+                </div>
+                <button
+                  className='btn btn-block btn-primary my-3 py-3'
+                  disabled={cartItems.length === 0}
+                  onClick={checkoutHandler}
+                >
+                  Tiến Hành Thanh Toán
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   )
 }
 

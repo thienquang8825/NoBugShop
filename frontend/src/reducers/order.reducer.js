@@ -25,7 +25,7 @@ const create = (state = {}, action) => {
 }
 
 const getDetails = (
-  state = { loading: true, orderItems: [], shippingAddress: {} },
+  state = { loading: true, orderItems: [], shippingInfo: {} },
   action
 ) => {
   switch (action.type) {

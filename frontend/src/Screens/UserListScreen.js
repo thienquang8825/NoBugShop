@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react'
-import { LinkContainer } from 'react-router-bootstrap'
-import { Table, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { UserAction } from '../actions/user.action'
@@ -36,56 +34,72 @@ const UserListScreen = ({ history }) => {
 
   return (
     <>
-      <h1>Danh Sách Người Dùng</h1>
-      {loading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant='danger'>{error}</Message>
-      ) : (
-        <Table striped bordered hover responsive className='table-sm'>
-          <thead className='table-primary'>
-            <tr>
-              <th>Id</th>
-              <th>Tên</th>
-              <th>Email</th>
-              <th>Admin</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user._id}>
-                <td>{user._id}</td>
-                <td>{user.name}</td>
-                <td>
-                  <a href={`mailto:${user.email}`}>{user.email}</a>
-                </td>
-                <td>
-                  {user.isAdmin ? (
-                    <i className='fas fa-check' style={{ color: 'green' }}></i>
-                  ) : (
-                    <i className='fas fa-times' style={{ color: 'red' }}></i>
-                  )}
-                </td>
-                <td>
-                  <LinkContainer to={`/admin/user/${user._id}/edit`}>
-                    <Button variant='primary' className='btn-sm'>
-                      <i className='fas fa-edit'></i>
-                    </Button>
-                  </LinkContainer>
-                  <Button
-                    variant='danger'
-                    className='btn-sm'
-                    onClick={() => deleteHandler(user._id)}
-                  >
-                    <i className='fas fa-trash'></i>
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      )}
+      <div className='container-fluid pt-5'>
+        <div className='row px-xl-5'>
+          <div className='col-lg-12 table-responsive mb-5'>
+            <div className='text-center mb-4'>
+              <h2 className='section-title px-5'>
+                <span className='px-2'>Quản Lý Người Dùng</span>
+              </h2>
+            </div>
+            {loading ? (
+              <Loader />
+            ) : error ? (
+              <Message variant='danger'>{error}</Message>
+            ) : (
+              <table className='table table-bordered text-center mb-0 table-hover'>
+                <thead className='bg-secondary text-dark'>
+                  <tr>
+                    <th>Mã nười dùng</th>
+                    <th>Tên</th>
+                    <th>Email</th>
+                    <th>Admin</th>
+                    <th>Sửa</th>
+                    <th>Xóa</th>
+                  </tr>
+                </thead>
+                <tbody className='align-middle'>
+                  {users.map((user) => (
+                    <tr key={user._id}>
+                      <td className='align-middle'>{user._id}</td>
+                      <td className='align-middle'>{user.name}</td>
+                      <td className='align-middle'>{user.email}</td>
+                      <td className='align-middle'>
+                        {user.isAdmin ? (
+                          <i
+                            className='fas fa-check'
+                            style={{ color: 'green' }}
+                          ></i>
+                        ) : (
+                          <i
+                            className='fas fa-times'
+                            style={{ color: 'red' }}
+                          ></i>
+                        )}
+                      </td>
+                      <td className='align-middle'>
+                        <Link to={`/admin/user/${user._id}/edit`}>
+                          <button className='btn btn-sm btn-primary'>
+                            <i className='fas fa-edit'></i>
+                          </button>
+                        </Link>
+                      </td>
+                      <td className='align-middle'>
+                        <button
+                          className='btn btn-sm btn-danger'
+                          onClick={() => deleteHandler(user._id)}
+                        >
+                          <i className='fa fa-times'></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      </div>
     </>
   )
 }
