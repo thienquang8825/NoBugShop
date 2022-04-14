@@ -1,6 +1,6 @@
 import { CART_CONSTANT as CONSTANT } from '../constants/cart.constant'
 
-const cart = (state = { cartItems: [], shippingAddress: {} }, action) => {
+const cart = (state = { cartItems: [], shippingInfo: {} }, action) => {
   switch (action.type) {
     case CONSTANT.ADD_ITEM:
       const item = action.payload
@@ -37,10 +37,10 @@ const cart = (state = { cartItems: [], shippingAddress: {} }, action) => {
         cartItems: [],
       }
 
-    case CONSTANT.SAVE_SHIPPING_ADDRESS:
+    case CONSTANT.SAVE_SHIPPING_INFO:
       return {
         ...state,
-        shippingAddress: action.payload,
+        shippingInfo: action.payload,
       }
 
     case CONSTANT.SAVE_PAYMENT_METHOD:

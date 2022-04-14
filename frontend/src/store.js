@@ -20,6 +20,7 @@ const reducer = combineReducers({
   productCreate: ProductReducer.createProduct,
   productUpdate: ProductReducer.updateProduct,
   productGetTopRated: ProductReducer.getTopRated,
+  productGetTopNew: ProductReducer.getTopNew,
   productCreateReview: ProductReducer.createReview,
 
   cart: CartReducer.cart,
@@ -48,19 +49,19 @@ const cartItemsFromStorage = localStorage.getItem('cartItems')
   ? JSON.parse(localStorage.getItem('cartItems'))
   : []
 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
+const shippingInfoFromStorage = localStorage.getItem('shippingInfo')
+  ? JSON.parse(localStorage.getItem('shippingInfo'))
   : {}
 
-// const paymentMethodFromStorage = localStorage.getItem('paymentMethod')
-//   ? JSON.parse(localStorage.getItem('paymentMethod'))
-//   : null
+const paymentMethodFromStorage = localStorage.getItem('paymentMethod')
+  ? JSON.parse(localStorage.getItem('paymentMethod'))
+  : null
 
 const initialState = {
   cart: {
     cartItems: cartItemsFromStorage,
-    shippingAddress: shippingAddressFromStorage,
-    // paymentMethod: paymentMethodFromStorage,
+    shippingInfo: shippingInfoFromStorage,
+    paymentMethod: paymentMethodFromStorage,
   },
   userLogin: { userInfo: userInfoFromStorage },
 }

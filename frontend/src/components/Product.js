@@ -1,34 +1,56 @@
 import React from 'react'
-import { Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { moneyFormat } from '../utils/moneyFormat'
-
-import Rating from './Rating'
+import { CartAction } from '../actions/cart.action'
+import { useDispatch } from 'react-redux'
 
 const Product = ({ product }) => {
+  const dispatch = useDispatch()
+
+  const addToCartHandler = () => {
+    if (product.countInStock > 0) {
+      window.alert('Đã thêm vào giỏ hàng!')
+      dispatch(CartAction.addToCart(product, 1))
+    } else {
+      window.alert('Sản phẩm đã hết hàng!')
+    }
+  }
   return (
-    <Card className='my-3 p-3 rounded' border='primary'>
-      <Link to={`/product/${product._id}`}>
-        <Card.Img src={product.image} />
-      </Link>
-
-      <Card.Body className='text-center'>
-        <Link to={`/product/${product._id}`}>
-          <Card.Title as='div'>
-            <strong>{product.name}</strong>
-          </Card.Title>
-        </Link>
-
-        <Card.Text as='div'>
-          <Rating
-            value={product.rating}
-            text={`${product.numReviews} reviews`}
-          />
-        </Card.Text>
-
-        <Card.Text as='h3'>{moneyFormat(product.price)}</Card.Text>
-      </Card.Body>
-    </Card>
+    product && (
+      <>
+        <div className='card product-item border-0 mb-4'>
+          <div className='card-header product-img position-relative overflow-hidden bg-transparent border p-0'>
+            <img
+              className='img-fluid w-100'
+              src={product.image}
+              alt={product.name}
+            />
+          </div>
+          <div className='card-body border-left border-right text-center p-0 pt-4 pb-3'>
+            <h6 className='text-truncate mb-3 px-3'>{product.name}</h6>
+            <div className='d-flex justify-content-center'>
+              <h6>{moneyFormat(product.price)}</h6>
+            </div>
+          </div>
+          <div className='card-footer d-flex justify-content-between bg-light border'>
+            <Link
+              to={`/product/${product._id}`}
+              className='btn btn-sm text-dark p-0'
+            >
+              <i className='fas fa-eye text-primary mr-1'></i>Xem chi tiết
+            </Link>
+            <Link
+              to='#'
+              className='btn btn-sm text-dark p-0'
+              onClick={addToCartHandler}
+            >
+              <i className='fas fa-shopping-cart text-primary mr-1'></i>Thêm giỏ
+              hàng
+            </Link>
+          </div>
+        </div>
+      </>
+    )
   )
 }
 

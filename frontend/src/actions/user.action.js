@@ -37,7 +37,7 @@ const login = (email, password) => async (dispatch) => {
 const logout = () => async (dispatch) => {
   localStorage.removeItem('userInfo')
   localStorage.removeItem('cartItems')
-  // localStorage.removeItem('shippingAddress')
+  // localStorage.removeItem('shippingInfo')
   // localStorage.removeItem('paymentMethod')
 
   dispatch({ type: CONSTANT.LOGOUT })

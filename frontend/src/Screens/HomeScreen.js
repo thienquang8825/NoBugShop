@@ -1,60 +1,36 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { Row, Col } from 'react-bootstrap'
 import { ProductAction } from '../actions/product.action'
-import Product from '../components/Product'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import Paginate from '../components/Paginate'
-import ProductCarousel from '../components/ProductCarousel'
+import ProductList from '../components/ProductList'
 
 const HomeScreen = () => {
-  const { keyword, categoryId, brandId, pageNumber } = useParams()
-
   const dispatch = useDispatch()
 
-  const productGetList = useSelector((state) => state.productGetList)
-  const { loading, error, products, page, pages } = productGetList
+  // const productGetTopRated = useSelector((state) => state.productGetTopRated)
+  // const { loading, error, products } = productGetTopRated
+
+  const productsNew = useSelector((state) => state.productGetTopNew)
+
+  const productsRated = useSelector((state) => state.productGetTopRated)
 
   useEffect(() => {
-    if (categoryId) {
-      dispatch(ProductAction.getListByCategory(categoryId, pageNumber))
-    } else if (brandId) {
-      dispatch(ProductAction.getListByBrand(brandId, pageNumber))
-    } else {
-      dispatch(ProductAction.getList(keyword, pageNumber))
-    }
-  }, [brandId, categoryId, dispatch, keyword, pageNumber])
+    dispatch(ProductAction.getTopRated())
+    dispatch(ProductAction.getTopNew())
+  }, [dispatch])
 
-  return (
+  return productsNew.loading ? (
+    <Loader />
+  ) : productsNew.error ? (
+    <Message variant='danger'>{productsNew.error}</Message>
+  ) : (
     <>
-      {!keyword && !categoryId && !brandId && <ProductCarousel />}
-      <h1>Danh Sách Sản Phẩm</h1>
-      {loading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant='danger'>{error}</Message>
-      ) : (
-        <>
-          <Row>
-            {products.map((product) => (
-              <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                <Product product={product} />
-              </Col>
-            ))}
-          </Row>
-          <Row className='d-flex justify-content-center'>
-            <Paginate
-              pages={pages}
-              page={page}
-              categoryId={categoryId ? categoryId : ''}
-              brandId={brandId ? brandId : ''}
-              keyword={keyword ? keyword : ''}
-            />
-          </Row>
-        </>
-      )}
+      <ProductList title='Sản Phẩm Mới' products={productsNew.products} />
+      <ProductList
+        title='Sản Phẩm Được Đánh Cao'
+        products={productsRated.products}
+      />
     </>
   )
 }

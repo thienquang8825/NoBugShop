@@ -149,6 +149,9 @@ const deliver = (orderId) => async (dispatch, getState) => {
       type: CONSTANT.DELIVER_SUCCESS,
       payload: data,
     })
+
+    //fix order after deliverd, myorder not update
+    dispatch(getMyList())
   } catch (error) {
     const message =
       error.response && error.response.data.message

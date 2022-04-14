@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import FormContainer from '../components/FormContainer'
 import { UserAction } from '../actions/user.action'
 import { USER_CONSTANTS } from '../constants/user.constants'
 
@@ -52,54 +50,68 @@ const UserEditScreen = () => {
 
   return (
     <>
-      <Link to='/admin/userlist' className='btn btn-primary my-3'>
-        Quay lại
-      </Link>
-      <FormContainer>
-        <h1>Cập Nhật Thông Tin</h1>
-        {loadingUpdate && <Loader />}
-        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
-        {loading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant='danger'>{error}</Message>
-        ) : (
-          <Form onSubmit={submitHandler}>
-            <Form.Group controlId='name' className='mb-3'>
-              <Form.Label>Tên</Form.Label>
-              <Form.Control
-                type='name'
-                placeholder='Nhập tên...'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+      <div className='container-fluid pt-5'>
+        <div className='row px-xl-5 justify-content-center'>
+          <div className='col-lg-5 col-md-8'>
+            <div className='text-center mb-4'>
+              <h2 className='section-title px-5'>
+                <span className='px-2'>Thông Tin Người Dùng</span>
+              </h2>
+            </div>
+            {loadingUpdate && <Loader />}
+            {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+            {loading ? (
+              <Loader />
+            ) : error ? (
+              <Message variant='danger'>{error}</Message>
+            ) : (
+              <form onSubmit={submitHandler}>
+                <div className='form-group'>
+                  <label>Tên</label>
+                  <input
+                    className='form-control bg-secondary'
+                    type='text'
+                    placeholder='Nhập tên...'
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div className='form-group'>
+                  <label>Email</label>
+                  <input
+                    className='form-control bg-secondary'
+                    type='text'
+                    placeholder='Nhập email...'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
 
-            <Form.Group controlId='email' className='my-3'>
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type='email'
-                placeholder='Nhập email...'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+                <div className='form-group'>
+                  <div className='custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3'>
+                    <input
+                      type='checkbox'
+                      className='custom-control-input'
+                      id='isAdmin'
+                      checked={isAdmin}
+                      onChange={(e) => setIsAdmin(e.target.checked)}
+                    />
+                    <label className='custom-control-label' htmlFor='isAdmin'>
+                      Quản trị viên
+                    </label>
+                  </div>
+                </div>
 
-            <Form.Group controlId='isadmin' className='my-3'>
-              <Form.Check
-                type='checkbox'
-                label='Quản trị viên'
-                checked={isAdmin}
-                onChange={(e) => setIsAdmin(e.target.checked)}
-              ></Form.Check>
-            </Form.Group>
-
-            <Button type='submit' variant='primary'>
-              Cập nhật
-            </Button>
-          </Form>
-        )}
-      </FormContainer>
+                <div className='form-group'>
+                  <button className='btn btn-primary py-2 px-4' type='submit'>
+                    Cập nhật thông tin
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
     </>
   )
 }

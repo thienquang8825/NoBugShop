@@ -26,13 +26,13 @@ const removeFromCart = (productId) => async (dispatch, getState) => {
   localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems))
 }
 
-const saveShippingAddress = (data) => async (dispatch) => {
+const saveShippingInfo = (data) => async (dispatch) => {
   dispatch({
-    type: CONSTANT.SAVE_SHIPPING_ADDRESS,
+    type: CONSTANT.SAVE_SHIPPING_INFO,
     payload: data,
   })
 
-  localStorage.setItem('shippingAddress', JSON.stringify(data))
+  localStorage.setItem('shippingInfo', JSON.stringify(data))
 }
 
 const savePaymentMethod = (data) => async (dispatch) => {
@@ -47,6 +47,6 @@ const savePaymentMethod = (data) => async (dispatch) => {
 export const CartAction = {
   addToCart,
   removeFromCart,
-  saveShippingAddress,
+  saveShippingInfo,
   savePaymentMethod,
 }

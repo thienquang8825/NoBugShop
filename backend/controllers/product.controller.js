@@ -7,7 +7,7 @@ import Brand from '../models/brand.model.js'
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 8
+  const pageSize = 6
   const page = Number(req.query.pageNumber) || 1
 
   const keyword = req.query.keyword
@@ -62,15 +62,15 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
   const product = new Product({
-    name: 'Sample name',
+    name: 'Sản phẩm mới',
     price: 0,
     user: req.user._id,
-    image: '/images/sample.jpg',
-    brand: 'Sample brand',
-    category: 'Sample category',
+    image: '/images/new.png',
+    brand: 'GIGABYTE',
+    category: 'Ram - Bộ Nhớ Trong',
     countInStock: 0,
     numReviews: 0,
-    description: 'Sample description',
+    description: 'Sản phẩm mới',
   })
 
   const createdProduct = await product.save()
@@ -147,8 +147,18 @@ const createReview = asyncHandler(async (req, res) => {
 // @desc    Get top rated products
 // @route   GET /api/products/top
 // @access  Public
-const getTopProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ rating: -1 }).limit(5) //ascending order
+const getTopRated = asyncHandler(async (req, res) => {
+  const products = await Product.find({}).sort({ rating: -1 }).limit(4) //ascending order
+
+  res.json(products)
+})
+
+// @desc    Get top new products
+// @route   GET /api/products/top
+// @access  Public
+const getTopNew = asyncHandler(async (req, res) => {
+  // const products = await Product.find({}).sort({ createAt: -1 }).limit(4) //ascending order
+  const products = await Product.find({}).sort({ _id: -1 }).limit(4)
 
   res.json(products)
 })
@@ -157,7 +167,7 @@ const getTopProducts = asyncHandler(async (req, res) => {
 // @route   GET /api/brand/:id
 // @access  Public
 const getProductsByCategory = asyncHandler(async (req, res) => {
-  const pageSize = 8
+  const pageSize = 6
   const page = Number(req.query.pageNumber) || 1
 
   const category = await Category.findById(req.params.id)
@@ -180,7 +190,7 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
 // @route   GET /api/brand/:id
 // @access  Public
 const getProductsByBrand = asyncHandler(async (req, res) => {
-  const pageSize = 8
+  const pageSize = 6
   const page = Number(req.query.pageNumber) || 1
 
   const brand = await Brand.findById(req.params.id)
@@ -206,7 +216,8 @@ export const ProductController = {
   createProduct,
   updateProduct,
   createReview,
-  getTopProducts,
+  getTopRated,
+  getTopNew,
   getProductsByCategory,
   getProductsByBrand,
 }

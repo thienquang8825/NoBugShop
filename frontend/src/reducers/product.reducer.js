@@ -102,6 +102,19 @@ const getTopRated = (state = { products: [] }, action) => {
   }
 }
 
+const getTopNew = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case CONSTANT.GET_TOP_NEW_REQUEST:
+      return { loading: true, products: [] }
+    case CONSTANT.GET_TOP_NEW_SUCCESS:
+      return { loading: false, products: action.payload }
+    case CONSTANT.GET_TOP_NEW_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
 export const ProductReducer = {
   getList,
   getDetails,
@@ -110,4 +123,5 @@ export const ProductReducer = {
   updateProduct,
   createReview,
   getTopRated,
+  getTopNew,
 }

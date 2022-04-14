@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { LinkContainer } from 'react-router-bootstrap'
-import { Table, Button, Row, Col } from 'react-bootstrap'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -71,66 +69,77 @@ const ProductListScreen = () => {
 
   return (
     <>
-      <Row className='align-items-center'>
-        <Col>
-          <h1>Danh Sách Sản Phẩm</h1>
-        </Col>
-        <Col className='text-end'>
-          <Button className='my-3' onClick={createProductHandler}>
-            <i className='fas fa-plus'></i> Tạo mới sản phẩm
-          </Button>
-        </Col>
-      </Row>
-      {loadingDelete && <Loader />}
-      {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
-      {loadingCreate && <Loader />}
-      {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
-      {loading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant='danger'>{error}</Message>
-      ) : (
-        <>
-          <Table striped bordered hover responsive className='table-sm'>
-            <thead className='table-primary'>
-              <tr>
-                <th>Id</th>
-                <th>Tên</th>
-                <th>Giá</th>
-                <th>Thể loại</th>
-                <th>Thương hiệu</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr key={product._id}>
-                  <td>{product._id}</td>
-                  <td>{product.name}</td>
-                  <td>{moneyFormat(product.price)}</td>
-                  <td>{product.category}</td>
-                  <td>{product.brand}</td>
-                  <td>
-                    <LinkContainer to={`/admin/product/${product._id}/edit`}>
-                      <Button variant='primary' className='btn-sm'>
-                        <i className='fas fa-edit'></i>
-                      </Button>
-                    </LinkContainer>
-                    <Button
-                      variant='danger'
-                      className='btn-sm'
-                      onClick={() => deleteHandler(product._id)}
-                    >
-                      <i className='fas fa-trash'></i>
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-          <Paginate pages={pages} page={page} isAdmin={true} />
-        </>
-      )}
+      <div className='container-fluid pt-5'>
+        <div className='row px-xl-5'>
+          <div className='col-lg-12 table-responsive mb-5'>
+            <div className='text-center mb-4'>
+              <h2 className='section-title px-5'>
+                <span className='px-2'>Quản Lý Sản Phẩm</span>
+              </h2>
+              <div>
+                <button
+                  className='btn btn-primary'
+                  onClick={createProductHandler}
+                >
+                  <i className='fas fa-plus'></i> Thêm sản phẩm
+                </button>
+              </div>
+            </div>
+            {loadingDelete && <Loader />}
+            {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
+            {loadingCreate && <Loader />}
+            {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
+            {loading ? (
+              <Loader />
+            ) : error ? (
+              <Message variant='danger'>{error}</Message>
+            ) : (
+              <>
+                <table className='table table-bordered text-center mb-4 table-hover'>
+                  <thead className='bg-secondary text-dark'>
+                    <tr>
+                      <th>Mã sản phẩm</th>
+                      <th>Tên</th>
+                      <th>Giá</th>
+                      <th>Thể loại</th>
+                      <th>Thương hiệu</th>
+                      <th>Sửa</th>
+                      <th>Xóa</th>
+                    </tr>
+                  </thead>
+                  <tbody className='align-middle'>
+                    {products.map((product) => (
+                      <tr key={product._id}>
+                        <td>{product._id}</td>
+                        <td>{product.name}</td>
+                        <td>{moneyFormat(product.price)}</td>
+                        <td>{product.category}</td>
+                        <td>{product.brand}</td>
+                        <td className='align-middle'>
+                          <Link to={`/admin/product/${product._id}/edit`}>
+                            <button className='btn btn-sm btn-primary'>
+                              <i className='fas fa-edit'></i>
+                            </button>
+                          </Link>
+                        </td>
+                        <td className='align-middle'>
+                          <button
+                            className='btn btn-sm btn-danger'
+                            onClick={() => deleteHandler(product._id)}
+                          >
+                            <i className='fa fa-times'></i>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <Paginate pages={pages} page={page} isAdmin={true} />
+              </>
+            )}
+          </div>
+        </div>
+      </div>
     </>
   )
 }
